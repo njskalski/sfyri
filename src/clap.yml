@@ -18,6 +18,5 @@ args:
       long: debug
       takes_value: false
       required: false
-      default: false
 
 help_message: help message
