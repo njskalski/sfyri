@@ -15,8 +15,12 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum InterfaceMsg {
     ShutDown,
-    Redraw
+    Redraw,
+}
+
+pub enum InterfaceBackMsg {
+    PreDrawTick,
 }

@@ -24,11 +24,19 @@ extern crate log;
 use std::borrow::BorrowMut;
 
 mod interface;
+mod logger;
+mod svc;
 mod view;
 
 use interface::interface_controller::InterfaceController;
+use logger::sfyri_logger;
 
 fn main() {
+    if sfyri_logger::init_logger().is_err() {
+        eprintln!("FATAL: unable to initialize logger, shutting down.");
+        return;
+    }
+
     let yml = clap::load_yaml!("clap.yml");
     let mut app = clap::App::from_yaml(yml)
         .author("NJ Skalski <gitstuff@s5i.ch>")
@@ -37,9 +45,11 @@ fn main() {
     let matches = app.clone().get_matches();
 
     if matches.is_present("help") {
-        app.write_long_help(std::io::stdout().borrow_mut());
+        app.write_long_help(std::io::stdout().borrow_mut())
+            .err()
+            .map(|e| eprint!("FATAL: Error displaying help, due {}", e));
         return;
     }
 
-    let mut ic : InterfaceController = InterfaceController::new();
+    let mut ic: InterfaceController = InterfaceController::new();
 }

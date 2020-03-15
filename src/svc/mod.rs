@@ -15,7 +15,13 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod interface_controller;
-pub mod interface_msg;
-pub mod interface_state;
-pub mod interface_worker;
+use std::ops::Deref;
+use std::sync::Arc;
+
+pub trait State {}
+
+pub trait Controller<ST: State> {
+    //contract: parent state is updated.
+    fn update(&mut self);
+    fn get_state(&self) -> Arc<ST>;
+}

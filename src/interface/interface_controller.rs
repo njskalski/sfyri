@@ -16,13 +16,39 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::interface::interface_state::InterfaceState;
+use crate::interface::interface_worker::{InterfaceWorker, InterfaceWorkerResult};
+use crate::svc::Controller;
+use std::ops::Deref;
+use std::sync::Arc;
+use std::thread;
+
+use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
+use crossbeam_channel::{unbounded, Receiver, Sender};
 
 pub struct InterfaceController {
-    state : InterfaceState
+    state: Arc<InterfaceState>,
+    handle: Option<thread::JoinHandle<(InterfaceWorkerResult)>>,
 }
 
 impl InterfaceController {
     pub fn new() -> Self {
-        InterfaceController { state : InterfaceState::new() }
+        let (sender, receiver): (Sender<InterfaceMsg>, Receiver<InterfaceMsg>) = unbounded();
+        let (sender_back, receiver_back): (Sender<InterfaceBackMsg>, Receiver<InterfaceBackMsg>) =
+            unbounded();
+
+        let handle = InterfaceWorker::start(receiver, sender_back);
+
+        InterfaceController {
+            state: Arc::new(InterfaceState::new()),
+            handle: Some(handle),
+        }
+    }
+}
+
+impl Controller<InterfaceState> for InterfaceController {
+    fn update(&mut self) {}
+
+    fn get_state(&self) -> Arc<InterfaceState> {
+        self.state.clone()
     }
 }

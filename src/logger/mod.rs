@@ -15,7 +15,4 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod interface_controller;
-pub mod interface_msg;
-pub mod interface_state;
-pub mod interface_worker;
+pub mod sfyri_logger;
