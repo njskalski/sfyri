@@ -1,0 +1,23 @@
+name: sfyri
+about: cli text editor
+
+settings:
+  - ColorAuto
+  - InferSubcommands
+  - StrictUtf8 #TODO incompatible with Windows.
+
+args:
+  - help:
+      short: h
+      long: help
+      takes_value: false
+      required: false
+  - debug:
+      help: Turns on debugging to stderr
+      short: d
+      long: debug
+      takes_value: false
+      required: false
+      default: false
+
+help_message: help message

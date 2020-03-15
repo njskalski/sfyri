@@ -1,0 +1,17 @@
+[package]
+name = "sfyri"
+version = "0.1.0"
+authors = ["NJ Skalski <gitstuff@s5i.ch>"]
+edition = "2018"
+
+
+
+[dependencies]
+ropey = "1.0"
+log = "0.4"
+stderrlog = "0.4"
+unicode-segmentation = "1.6.0"
+crossbeam-channel = "0.4"
+cursive = "0.14.0"
+clap = { version = "2.33", features = ["yaml"] }
+lazy_static = "1.4"

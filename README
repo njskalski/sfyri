@@ -1,0 +1,3 @@
+This is a work in progress text editor that is designed with programming in mind.
+It's my second attempt to write an editor and I will borrow a lot of code from Apache licensed sly-editor I worked on
+while working at Google. However all code commited in 2020 and onwards is licensed under GPLv3.
