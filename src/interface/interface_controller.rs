@@ -15,31 +15,14 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#[macro_use]
-extern crate clap;
+use crate::interface::interface_state::InterfaceState;
 
-#[macro_use]
-extern crate log;
+pub struct InterfaceController {
+    state : InterfaceState
+}
 
-use std::borrow::BorrowMut;
-
-mod interface;
-mod view;
-
-use interface::interface_controller::InterfaceController;
-
-fn main() {
-    let yml = clap::load_yaml!("clap.yml");
-    let mut app = clap::App::from_yaml(yml)
-        .author("NJ Skalski <gitstuff@s5i.ch>")
-        .long_version(crate_version!());
-
-    let matches = app.clone().get_matches();
-
-    if matches.is_present("help") {
-        app.write_long_help(std::io::stdout().borrow_mut());
-        return;
+impl InterfaceController {
+    pub fn new() -> Self {
+        InterfaceController { state : InterfaceState::new() }
     }
-
-    let mut ic : InterfaceController = InterfaceController::new();
 }

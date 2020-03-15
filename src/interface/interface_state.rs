@@ -15,8 +15,17 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::view::view_trait::View;
+
 pub enum InterfaceState {
-    Created,
-    Ready{views : Vec<Box<View>>},
+    Ready{
+        views : Vec<Box<View>>
+    },
     Finished
+}
+
+impl InterfaceState {
+    pub fn new() -> Self {
+        InterfaceState::Ready {views : vec!()}
+    }
 }
