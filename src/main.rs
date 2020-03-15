@@ -17,12 +17,14 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 #[macro_use]
 extern crate clap;
-
 #[macro_use]
 extern crate log;
+extern crate ropey;
 
 use std::borrow::BorrowMut;
 
+mod buffer;
+mod edit_event;
 mod interface;
 mod logger;
 mod svc;

@@ -43,6 +43,11 @@ impl InterfaceController {
             handle: Some(handle),
         }
     }
+
+    fn tmp_join(&mut self) {
+        self.handle.take().unwrap().join();
+    }
+
 }
 
 impl Controller<InterfaceState> for InterfaceController {
