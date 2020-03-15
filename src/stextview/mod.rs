@@ -15,5 +15,5 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod buffer_trait;
-pub mod default_buffer;
+pub mod text_view_state;
+pub mod text_view;

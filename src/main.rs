@@ -24,6 +24,7 @@ extern crate ropey;
 use std::borrow::BorrowMut;
 
 mod buffer;
+mod cursor_set;
 mod edit_event;
 mod interface;
 mod logger;
