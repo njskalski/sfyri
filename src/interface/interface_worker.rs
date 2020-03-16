@@ -20,6 +20,10 @@ use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use cursive::Cursive;
 use std::string::ToString;
 use std::thread;
+use crate::buffer::buffer_trait::Buffer;
+use crate::buffer::default_buffer::DefaultBuffer;
+use std::sync::{Arc, Mutex};
+use crate::stextview::text_view::SfyriTextView;
 
 pub enum InterfaceWorkerResult {
     Quit,
@@ -73,6 +77,7 @@ impl InterfaceWorker {
                         debug!("received shutdown signal.");
                         self.siv.quit();
                     }
+                    InterfaceMsg::AddView{ t } => self.add_view(),
                     _ => {
                         debug!("unhandled InterfaceMsg {:?}", msg);
                     }
@@ -84,5 +89,14 @@ impl InterfaceWorker {
 
         debug!("interface worker thread ends.");
         InterfaceWorkerResult::Quit
+    }
+
+    fn add_view(&mut self) {
+
+        let buffer: Box<dyn Buffer> = Box::new(DefaultBuffer::empty());
+        let arc = Arc::new(Mutex::new(buffer));
+        let mut view = SfyriTextView::new(arc);
+
+        self.siv.add_fullscreen_layer(view);
     }
 }
