@@ -1,7 +1,7 @@
 /* This is a fork of https://github.com/njskalski/sly-editor/src/sly_text_view.rs
-   If so, the original is licensed under Apache license. All subsequent changes are GPLv3.
+If so, the original is licensed under Apache license. All subsequent changes are GPLv3.
 
-   */
+*/
 
 /*
 This file is part of Sfyri.
@@ -20,6 +20,8 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::cursor_set::CursorSet;
+use core::borrow::Borrow;
 use cursive::direction::Direction;
 use cursive::event::{Event, EventResult, Key, MouseButton, MouseEvent};
 use cursive::theme::{Color, ColorType};
@@ -40,15 +42,13 @@ use std::cmp::min;
 use std::collections::HashMap;
 use std::iter;
 use std::rc::Rc;
+use std::string::ToString;
+use std::sync::{Arc, Mutex};
 use std::usize::MAX;
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;
-use crate::cursor_set::CursorSet;
-use core::borrow::Borrow;
-use crate::text_view_state::TextViewState;
-use crate::buffer_interface::{Buffer, BufferContent};
-use std::sync::{Arc, Mutex};
-use std::string::ToString;
+use crate::stextview::text_view_state::TextViewState;
+use crate::buffer::buffer_trait::{Buffer, BufferContent};
 
 const INDEX_MARGIN: usize = 1;
 const PAGE_WIDTH: usize = 80;
@@ -61,28 +61,24 @@ pub struct SfyriTextView {
 }
 
 impl SfyriTextView {
-    pub fn new(
-        buffer: Arc<Mutex<Box<Buffer>>>,
-    ) -> IdView<Self> {
+    pub fn new(buffer: Arc<Mutex<Box<Buffer>>>) -> IdView<Self> {
         let syntax_highlighting: bool = false;
 
         let mut view = SfyriTextView {
-            s : TextViewState::new(buffer),
+            s: TextViewState::new(buffer),
             position: Vec2::new(0, 0),
             last_view_size: None,
         };
 
         IdView::new("text_view", view)
     }
-
-
 }
 
 //TODO(njskalski): handle too small space.
 impl View for SfyriTextView {
     fn draw(&self, printer: &Printer) {
         let content_lock = self.s.buffer.lock().unwrap();
-        let content : &dyn BufferContent = *content_lock.get_content();
+        let content: &dyn BufferContent = *content_lock.get_content();
         let line_count: usize = content.len_lines();
         let index_length = line_count.to_string().len();
         let cursors = &self.s.cursor_set;
@@ -91,7 +87,7 @@ impl View for SfyriTextView {
 
         //index + INDEX_MARGIN ----------------------------------------------------------------
         for line_no in
-        (self.position.y)..(cmp::min(content.len_lines(), self.position.y + view_size.y))
+            (self.position.y)..(cmp::min(content.len_lines(), self.position.y + view_size.y))
         {
             let mut x: usize = 0;
 
@@ -119,14 +115,18 @@ impl View for SfyriTextView {
         //line --------------------------------------------------------------------------------
 
         for line_no in
-        (self.position.y)..(cmp::min(content.len_lines(), self.position.y + view_size.y))
+            (self.position.y)..(cmp::min(content.len_lines(), self.position.y + view_size.y))
         {
             let y = line_no - self.position.y;
             let line_offset = &content.line_to_char(line_no);
             let line = &content.line(line_no);
 
             //this allow a cursor *after* the last character. It's actually needed.
-            let add = if line_no == content.len_lines() - 1 { 1 } else { 0 };
+            let add = if line_no == content.len_lines() - 1 {
+                1
+            } else {
+                0
+            };
 
             let line_char_count = line.chars().count();
             for char_idx in 0..(line_char_count + add) {
@@ -145,9 +145,9 @@ impl View for SfyriTextView {
                     ColorStyle::highlight()
                 } else {
                     if char_idx <= 80 && !special_char {
-                        let mut someColor = ColorStyle::primary();
+                        let mut some_color = ColorStyle::primary();
 
-                        someColor
+                        some_color
                     } else {
                         ColorStyle::secondary()
                     }
@@ -157,10 +157,7 @@ impl View for SfyriTextView {
 
                 printer.with_color(color_style, |printer| {
                     printer.with_effect(effect, |printer| {
-                        printer.print(
-                            (char_idx + index_length + INDEX_MARGIN, y),
-                            symbol,
-                        );
+                        printer.print((char_idx + index_length + INDEX_MARGIN, y), symbol);
                     });
                 });
             }
@@ -175,7 +172,6 @@ impl View for SfyriTextView {
     }
 
     fn on_event(&mut self, event: Event) -> EventResult {
-
         let mut consumed = true;
         match event {
             Event::Char(c) => {
@@ -200,13 +196,13 @@ impl View for SfyriTextView {
                 self.s.arrow_down();
             }
             //TODO(njskalski): implement scrolling up
-//            Event::Key(Key::PageUp) => {
-//                self.s.page_up()
-//          }
+            //            Event::Key(Key::PageUp) => {
+            //                self.s.page_up()
+            //          }
             //TODO(njskalski): implement scrolling down
-//            Event::Key(Key::PageDown) => {
-//                self.s.page_down();
-//            }
+            //            Event::Key(Key::PageDown) => {
+            //                self.s.page_down();
+            //            }
             _ => {
                 debug!("unhandled event (in sly_text_view) {:?}", event);
                 consumed = false;
@@ -218,6 +214,4 @@ impl View for SfyriTextView {
             EventResult::Ignored
         }
     }
-
-
 }

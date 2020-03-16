@@ -28,8 +28,10 @@ mod cursor_set;
 mod edit_event;
 mod interface;
 mod logger;
+mod stextview;
 mod svc;
 mod view;
+mod view_type;
 
 use interface::interface_controller::InterfaceController;
 use logger::sfyri_logger;
@@ -55,4 +57,10 @@ fn main() {
     }
 
     let mut ic: InterfaceController = InterfaceController::new();
+
+    ic.tmp_add_view();
+
+    ic.tmp_join();
+
+    debug!("goodbye!");
 }

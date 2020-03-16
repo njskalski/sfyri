@@ -23,11 +23,13 @@ use std::sync::Arc;
 use std::thread;
 
 use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
+use crate::view_type::ViewType;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
     handle: Option<thread::JoinHandle<(InterfaceWorkerResult)>>,
+    msgs: Sender<InterfaceMsg>,
 }
 
 impl InterfaceController {
@@ -41,13 +43,19 @@ impl InterfaceController {
         InterfaceController {
             state: Arc::new(InterfaceState::new()),
             handle: Some(handle),
+            msgs: sender,
         }
     }
 
-    fn tmp_join(&mut self) {
-        self.handle.take().unwrap().join();
+    pub fn tmp_add_view(&mut self) {
+        self.msgs.send(InterfaceMsg::AddView {
+            t: ViewType::SfyriTextView,
+        });
     }
 
+    pub fn tmp_join(&mut self) {
+        self.handle.take().unwrap().join();
+    }
 }
 
 impl Controller<InterfaceState> for InterfaceController {

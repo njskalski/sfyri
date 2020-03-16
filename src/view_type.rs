@@ -1,4 +1,5 @@
-/* Portions of this file might have been copied from https://github.com/njskalski/sly-editor/src/content_provider.rs
+/* Portions of this file might have been copied from https://github.com/njskalski/sly-editor/
+I honestly don't remember.
 If so, the original is licensed under Apache license. All subsequent changes are GPLv3
 */
 
@@ -19,18 +20,8 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// Represents a order to edit a content. Offsets are calculated in CHARS, not bytes.
-/// offset is the first character of selection, inclusive.
-//TODO(njskalski) secure against overlapping cursors!
-#[derive(Debug)]
-pub enum EditEvent {
-    Insert {
-        offset: usize,
-        content: String,
-    },
-    Change {
-        offset: usize,
-        length: usize,
-        content: String,
-    },
+#[derive(Clone, Copy, Debug)]
+pub enum ViewType {
+    SfyriTextView,
+    FuzzyView,
 }

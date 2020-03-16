@@ -1,7 +1,7 @@
 /* Portions of this file might have been copied from https://github.com/njskalski/sly-editor/
-   I honestly don't remember.
-   If so, the original is licensed under Apache license. All subsequent changes are GPLv3
-   */
+I honestly don't remember.
+If so, the original is licensed under Apache license. All subsequent changes are GPLv3
+*/
 
 /*
 This file is part of Sfyri.
@@ -24,7 +24,7 @@ use crate::edit_event::EditEvent;
 
 pub enum BufferType {
     ReadWrite,
-    ReadOnly
+    ReadOnly,
 }
 
 pub trait Buffer {
@@ -46,8 +46,8 @@ pub trait Buffer {
 pub trait BufferContent {
     fn as_string(&self) -> String;
     fn len_lines(&self) -> usize;
-    fn line_to_char(&self, line_idx : usize) -> usize;
-    fn char_to_line(&self, char_idx : usize) -> usize;
+    fn line_to_char(&self, line_idx: usize) -> usize;
+    fn char_to_line(&self, char_idx: usize) -> usize;
     fn len_chars(&self) -> usize;
-    fn line(&self, line_idx : usize) -> String;
+    fn line(&self, line_idx: usize) -> String;
 }

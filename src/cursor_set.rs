@@ -36,19 +36,19 @@ use std::collections::HashSet;
 
 use crate::buffer::buffer_trait::BufferContent;
 
-const NEWLINE_LENGTH : usize = 1; // TODO(njskalski): add support for multisymbol newlines?
+const NEWLINE_LENGTH: usize = 1; // TODO(njskalski): add support for multisymbol newlines?
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Selection {
-    pub b : usize, //begin inclusive
-    pub e : usize, //end EXCLUSIVE (as *everywhere*)
+    pub b: usize, //begin inclusive
+    pub e: usize, //end EXCLUSIVE (as *everywhere*)
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Cursor {
-    pub s : Option<Selection>, // selection
-    pub a: usize, //anchor
-    pub preferred_column : Option<usize>,
+    pub s: Option<Selection>, // selection
+    pub a: usize,             //anchor
+    pub preferred_column: Option<usize>,
 }
 
 impl Cursor {
@@ -67,16 +67,23 @@ impl Cursor {
     }
 
     pub fn single() -> Self {
-        Cursor{ s: None, a : 0, preferred_column : None }
+        Cursor {
+            s: None,
+            a: 0,
+            preferred_column: None,
+        }
     }
 }
 
 impl Into<Cursor> for (usize, usize, usize) {
     fn into(self) -> (Cursor) {
         Cursor {
-            s : Some(Selection { b : self.0, e : self.1} ),
-            a : self.2,
-            preferred_column : None,
+            s: Some(Selection {
+                b: self.0,
+                e: self.1,
+            }),
+            a: self.2,
+            preferred_column: None,
         }
     }
 }
@@ -84,24 +91,26 @@ impl Into<Cursor> for (usize, usize, usize) {
 impl Into<Cursor> for usize {
     fn into(self) -> Cursor {
         Cursor {
-            s : None,
-            a : self,
-            preferred_column : None
+            s: None,
+            a: self,
+            preferred_column: None,
         }
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CursorSet {
-    set : Vec<Cursor>
+    set: Vec<Cursor>,
 }
 
 impl CursorSet {
     pub fn single() -> Self {
-        CursorSet { set : vec![Cursor::single()] }
+        CursorSet {
+            set: vec![Cursor::single()],
+        }
     }
 
-    pub fn new(set : Vec<Cursor>) -> Self {
+    pub fn new(set: Vec<Cursor>) -> Self {
         CursorSet { set }
     }
 
@@ -111,8 +120,7 @@ impl CursorSet {
 }
 
 impl CursorSet {
-
-    pub fn has_anchor_at(&self, char_idx : usize) -> bool {
+    pub fn has_anchor_at(&self, char_idx: usize) -> bool {
         self.set
             .iter()
             .map(|cursor| cursor.a == char_idx)
@@ -123,7 +131,7 @@ impl CursorSet {
         self.move_left_by(1);
     }
 
-    pub fn move_left_by(&mut self, l : usize) {
+    pub fn move_left_by(&mut self, l: usize) {
         for mut c in &mut self.set {
             c.clear_both();
             if c.a > 0 {
@@ -132,11 +140,11 @@ impl CursorSet {
         }
     }
 
-    pub fn move_right(&mut self, bc : &dyn BufferContent) {
+    pub fn move_right(&mut self, bc: &dyn BufferContent) {
         self.move_right_by(bc, 1);
     }
 
-    pub fn move_right_by(&mut self, bc : &dyn BufferContent, l : usize) {
+    pub fn move_right_by(&mut self, bc: &dyn BufferContent, l: usize) {
         let len = bc.len_chars();
 
         for mut c in &mut self.set {
@@ -148,7 +156,7 @@ impl CursorSet {
         }
     }
 
-    pub fn move_vertically_by(&mut self, bc : &dyn BufferContent, l : isize) {
+    pub fn move_vertically_by(&mut self, bc: &dyn BufferContent, l: isize) {
         if l == 0 {
             return;
         }
@@ -156,13 +164,15 @@ impl CursorSet {
         let string = bc.as_string();
         let last_line_idx = bc.len_lines() - 1;
 
-        for mut c in &mut self.set  {
+        for mut c in &mut self.set {
             //getting data
             let cur_line_idx = bc.char_to_line(c.a);
             let cur_line_begin_char_idx = bc.line_to_char(cur_line_idx);
             let current_char_idx = c.a - cur_line_begin_char_idx;
 
-            if cur_line_idx as isize + l > last_line_idx as isize/* && l > 0, checked before */ {
+            if cur_line_idx as isize + l > last_line_idx as isize
+            /* && l > 0, checked before */
+            {
                 c.preferred_column = Some(current_char_idx);
                 c.a = bc.len_chars(); // pointing to index higher than last valid one.
                 continue;
@@ -184,11 +194,11 @@ impl CursorSet {
                 //this corresponds to a notion of "potential new character" beyond the buffer. It's a valid cursor position.
                 bc.len_chars()
             } else {
-                bc.line_to_char(new_line_idx+1) - NEWLINE_LENGTH
+                bc.line_to_char(new_line_idx + 1) - NEWLINE_LENGTH
             };
 
             let new_line_begin = bc.line_to_char(new_line_idx);
-            let new_line_num_chars = last_char_idx_in_new_line + 1 - new_line_begin ;
+            let new_line_num_chars = last_char_idx_in_new_line + 1 - new_line_begin;
 
             //setting data
 
@@ -224,11 +234,11 @@ impl CursorSet {
     /// TODO(njskalski): it would make a sense not to reduce cursors that have identical .a but different .preferred_column.
     /// Yet we want not to put characters twice for overlapping cursors.
     pub fn reduce(&mut self) {
-        let mut curs : HashSet<usize> = HashSet::new();
+        let mut curs: HashSet<usize> = HashSet::new();
 
-//        dbg!(&self.set);
+        //        dbg!(&self.set);
 
-        let mut old_curs : Vec<Cursor> = vec![];
+        let mut old_curs: Vec<Cursor> = vec![];
         std::mem::swap(&mut old_curs, &mut self.set);
 
         for mut c in &old_curs {
@@ -245,10 +255,9 @@ impl CursorSet {
             }
         }
 
-//        dbg!(&self.set);
+        //        dbg!(&self.set);
 
-//        self.set.sort();
-//        self.set.dedup();
+        //        self.set.sort();
+        //        self.set.dedup();
     }
-
 }

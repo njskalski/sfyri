@@ -1,6 +1,6 @@
 /* Portions of this file are copied from https://github.com/njskalski/sly-editor/
-   If so, the original is licensed under Apache license. All subsequent changes are GPLv3
-   */
+If so, the original is licensed under Apache license. All subsequent changes are GPLv3
+*/
 
 /*
 This file is part of Sfyri.
@@ -19,12 +19,12 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
-use std::sync::{Arc, Mutex};
-use crate::buffer_interface::{Buffer, BufferContent};
 use crate::cursor_set::CursorSet;
 use crate::edit_event::EditEvent;
 use std::borrow::{Borrow, BorrowMut};
+use std::sync::{Arc, Mutex};
+use crate::buffer::buffer_trait::{Buffer, BufferContent};
+use unicode_segmentation::UnicodeSegmentation;
 
 // This is supposed to be a serializable state of view
 pub struct TextViewState {
@@ -37,7 +37,7 @@ impl TextViewState {
     pub fn new(buffer: Arc<Mutex<Box<Buffer>>>) -> Self {
         TextViewState {
             buffer: buffer,
-            cursor_set: CursorSet::single()
+            cursor_set: CursorSet::single(),
         }
     }
 
@@ -47,27 +47,30 @@ impl TextViewState {
     }
 
     // TODO(njskalski): Expand definition for anchor+selection model.
-    pub fn has_cursor_at(&self, char_idx : usize) -> bool {
+    pub fn has_cursor_at(&self, char_idx: usize) -> bool {
         self.cursor_set.has_anchor_at(char_idx)
     }
 
-    pub fn add_text<S : ToString>(&mut self, text: &S) {
+    pub fn add_text<S: ToString>(&mut self, text: &S) {
         let mut edit_events: Vec<EditEvent> = self
             .cursor_set
             .set()
             .iter()
-            .map(|ref cursor| EditEvent::Insert { offset: cursor.a, content: text.to_string() })
+            .map(|ref cursor| EditEvent::Insert {
+                offset: cursor.a,
+                content: text.to_string(),
+            })
             .collect();
         edit_events.reverse();
 
-
-        let text_len = unicode_segmentation::UnicodeSegmentation::graphemes(text.to_string().as_str(), true).count();
+        let text_len =
+            unicode_segmentation::UnicodeSegmentation::graphemes(text.to_string().as_str(), true)
+                .count();
 
         let mut buffer_locked = self.buffer.lock().unwrap();
         buffer_locked.submit_events(edit_events);
-        let content : &dyn BufferContent = *buffer_locked.get_content();
+        let content: &dyn BufferContent = *buffer_locked.get_content();
         self.cursor_set.move_right_by(content, text_len);
-
     }
 
     // TODO(njskalski): fix, test
@@ -101,11 +104,15 @@ impl TextViewState {
 
     pub fn arrow_up(&mut self) {
         let buffer_locked = self.buffer.lock().unwrap();
-        &self.cursor_set.move_vertically_by(*buffer_locked.get_content(), -1);
+        &self
+            .cursor_set
+            .move_vertically_by(*buffer_locked.get_content(), -1);
     }
 
     pub fn arrow_down(&mut self) {
         let buffer_locked = self.buffer.lock().unwrap();
-        &self.cursor_set.move_vertically_by(*buffer_locked.get_content(), 1);
+        &self
+            .cursor_set
+            .move_vertically_by(*buffer_locked.get_content(), 1);
     }
 }

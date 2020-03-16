@@ -15,12 +15,16 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::view_type::ViewType;
+
 #[derive(Clone, Copy, Debug)]
 pub enum InterfaceMsg {
     ShutDown,
     Redraw,
+    AddView { t: ViewType },
 }
 
+#[derive(Clone, Copy, Debug)]
 pub enum InterfaceBackMsg {
     PreDrawTick,
 }

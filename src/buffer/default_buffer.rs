@@ -1,7 +1,7 @@
 /* Portions of this file might have been copied from https://github.com/njskalski/sly-editor/
-   I honestly don't remember.
-   If so, the original is licensed under Apache license. All subsequent changes are GPLv3
-   */
+I honestly don't remember.
+If so, the original is licensed under Apache license. All subsequent changes are GPLv3
+*/
 
 /*
 This file is part of Sfyri.
@@ -20,24 +20,24 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use ropey::Rope;
 use crate::buffer::buffer_trait::{Buffer, BufferContent, BufferType};
 use crate::edit_event::EditEvent;
+use ropey::Rope;
 
 pub struct RopeBufferContent {
-    rope : Rope
+    rope: Rope,
 }
 
 pub struct DefaultBuffer {
     history: Vec<RopeBufferContent>,
-    pointer: usize
+    pointer: usize,
 }
 
 impl DefaultBuffer {
     pub fn empty() -> Self {
         DefaultBuffer {
-            history : vec![RopeBufferContent{ rope : Rope::new() }],
-            pointer: 0
+            history: vec![RopeBufferContent { rope: Rope::new() }],
+            pointer: 0,
         }
     }
 
@@ -59,7 +59,9 @@ impl Buffer for DefaultBuffer {
         Box::new(self.current())
     }
 
-    fn get_content_mut(&mut self) -> Box<&mut BufferContent> { Box::new(self.current_mut()) }
+    fn get_content_mut(&mut self) -> Box<&mut BufferContent> {
+        Box::new(self.current_mut())
+    }
 
     fn check_concord_slow(&self) -> bool {
         unimplemented!()
@@ -91,7 +93,7 @@ impl Buffer for DefaultBuffer {
         let rope = new_content.clone(); // O(1)
 
         self.history.truncate(self.pointer + 1); //droping redo's
-        self.history.push(RopeBufferContent { rope : new_content });
+        self.history.push(RopeBufferContent { rope: new_content });
         self.pointer += 1;
     }
 }
@@ -105,11 +107,11 @@ impl BufferContent for RopeBufferContent {
         self.rope.len_lines()
     }
 
-    fn line_to_char(&self, line_idx : usize) -> usize {
+    fn line_to_char(&self, line_idx: usize) -> usize {
         self.rope.line_to_byte(line_idx)
     }
 
-    fn char_to_line(&self, char_idx : usize) -> usize {
+    fn char_to_line(&self, char_idx: usize) -> usize {
         self.rope.char_to_line(char_idx)
     }
 
@@ -127,7 +129,7 @@ impl BufferContent for RopeBufferContent {
 // Now events are applied one after another in order they were issued.
 //TODO in some combinations offsets should be recomputed. But I expect no such combinations appear.
 // I should however check it just in case.
-fn apply_events(old_lines : &Rope, events: &Vec<EditEvent>) -> (Rope, usize) {
+fn apply_events(old_lines: &Rope, events: &Vec<EditEvent>) -> (Rope, usize) {
     let mut new_lines: Rope = old_lines.clone();
 
     // Offset is in CHARS, and since it's common, it's valid in both new and old contents.
@@ -135,11 +137,18 @@ fn apply_events(old_lines : &Rope, events: &Vec<EditEvent>) -> (Rope, usize) {
 
     for event in events {
         match event {
-            &EditEvent::Insert { ref offset, ref content } => {
+            &EditEvent::Insert {
+                ref offset,
+                ref content,
+            } => {
                 first_change_pos = std::cmp::min(first_change_pos, *offset);
                 new_lines.insert(*offset, content);
             }
-            &EditEvent::Change { ref offset, ref length, ref content } => {
+            &EditEvent::Change {
+                ref offset,
+                ref length,
+                ref content,
+            } => {
                 first_change_pos = std::cmp::min(first_change_pos, *offset);
                 new_lines.remove(*offset..(*offset + *length));
                 new_lines.insert(*offset, content);
