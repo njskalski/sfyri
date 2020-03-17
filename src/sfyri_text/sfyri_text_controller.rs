@@ -16,12 +16,21 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
-use crate::svc::{Controller, StateRef};
+use crate::svc::Controller;
+use std::sync::Arc;
 
 pub struct SfyriTextController {}
 
 impl Controller<SfyriTextState> for SfyriTextController {
-    fn get_state(&self) -> StateRef<SfyriTextState> {
+    fn get_state(&self) -> Option<Arc<SfyriTextState>> {
+        unimplemented!()
+    }
+
+    fn set_state(&mut self, s: Arc<SfyriTextState>) {
+        unimplemented!()
+    }
+
+    fn is_state_ready(&self) -> bool {
         unimplemented!()
     }
 }

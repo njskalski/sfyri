@@ -20,8 +20,9 @@ use serde::{Deserialize, Serialize};
 use std::borrow::Borrow;
 use std::ops::Deref;
 use std::sync::Arc;
+use std::fmt::Debug;
 
-pub trait State: Serialize + DeserializeOwned + Sized {
+pub trait State: Clone + Debug + Serialize + DeserializeOwned + Sized + Send {
     fn is_versioned(&self) -> bool {
         false
     }
@@ -53,7 +54,7 @@ pub trait State: Serialize + DeserializeOwned + Sized {
 
 pub trait Controller<ST: State> {
     // Rationale: Controller can be in incomplete state to render a complete state.
-    fn get_state(&self) -> Option<StateRef<ST>>;
+    fn get_state(&self) -> Option<Arc<ST>>;
 
     // TODO: add to docs.
     // Rationale: Controller can be re-set into operation with deserialized state by parent controller.
@@ -61,30 +62,4 @@ pub trait Controller<ST: State> {
     fn set_state(&mut self, s: Arc<ST>);
 
     fn is_state_ready(&self) -> bool;
-}
-
-// It's a wrapper to take away writing capabilities.
-#[derive(Clone)]
-pub struct StateRef<ST: State> {
-    arc: Arc<ST>,
-}
-
-unsafe impl<ST: State> Send for StateRef<ST> {}
-
-impl<ST: State> StateRef<ST> {
-    fn new(arc: Arc<ST>) -> Self {
-        StateRef { arc }
-    }
-}
-
-impl<ST: State> Borrow<ST> for StateRef<ST> {
-    fn borrow(&self) -> &ST {
-        self.arc.borrow()
-    }
-}
-
-impl<ST: State> From<Arc<ST>> for StateRef<ST> {
-    fn from(arc: Arc<ST>) -> Self {
-        StateRef::new(arc)
-    }
 }

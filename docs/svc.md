@@ -30,6 +30,9 @@ Here are some ideas I have:
 - Controller can DROP the previous state (and start from scrach or not) but 
 the dropped state will continue to persist read-only until last of it's clients drops it.
 
-
+This is experimental:
+- Can be versioned.
+- Serialize PRESERVES versions...
+- ...unless you explicitly DROP.
 
 

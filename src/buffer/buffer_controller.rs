@@ -19,7 +19,7 @@ use crate::buffer::apply_events::apply_events;
 use crate::buffer::buffer_state::BufferState;
 use crate::buffer::wrapped_rope::WrappedRope;
 use crate::edit_event::EditEvent;
-use crate::svc::{Controller, StateRef};
+use crate::svc::Controller;
 use std::borrow::Borrow;
 use std::mem;
 use std::ops::Deref;
@@ -30,6 +30,10 @@ pub struct BufferController {
 }
 
 impl BufferController {
+    pub fn new() -> Self {
+        BufferController { s : Some( Arc::new(BufferState::empty()) ) }
+    }
+
     fn advance_state(&mut self, events: &Vec<EditEvent>) {
         if self.s.is_none() {
             warn!("Buffer controller called to advance on empty buffer state! Initializing with empty state to avoid crash. This should not have happened.");
@@ -52,8 +56,8 @@ impl BufferController {
 }
 
 impl Controller<BufferState> for BufferController {
-    fn get_state(&self) -> Option<StateRef<BufferState>> {
-        self.s.as_ref().map(|arc| StateRef::from(arc.clone()))
+    fn get_state(&self) -> Option<Arc<BufferState>> {
+        self.s.clone()
     }
 
     fn set_state(&mut self, state_op: Arc<BufferState>) {

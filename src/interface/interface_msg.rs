@@ -17,7 +17,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use crate::view_type::ViewType;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub enum InterfaceMsg {
     ShutDown,
     Redraw,

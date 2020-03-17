@@ -21,6 +21,8 @@ use cursive::Cursive;
 use std::string::ToString;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use crate::view_type::ViewType;
+use crate::sfyri_text::sfyri_text_view::SfyriTextView;
 
 pub enum InterfaceWorkerResult {
     Quit,
@@ -74,7 +76,7 @@ impl InterfaceWorker {
                         debug!("received shutdown signal.");
                         self.siv.quit();
                     }
-                    // InterfaceMsg::AddView{ t } => self.add_view(),
+                    InterfaceMsg::AddView{ t } => self.tmp_add_view(t),
                     _ => {
                         debug!("unhandled InterfaceMsg {:?}", msg);
                     }
@@ -88,12 +90,23 @@ impl InterfaceWorker {
         InterfaceWorkerResult::Quit
     }
 
-    // fn add_view(&mut self) {
-    //
-    //     let buffer: Box<dyn Buffer> = Box::new(DefaultBuffer::empty());
-    //     let arc = Arc::new(Mutex::new(buffer));
-    //     let mut view = SfyriTextView::new(arc);
-    //
-    //     self.siv.add_fullscreen_layer(view);
-    // }
+    fn tmp_add_view(&mut self, t: ViewType) {
+
+        match t {
+            ViewType::SfyriTextView {cid, s} => {
+
+                // let mut view = SfyriTextView::new()
+
+            }
+            other => debug!("Ignoring add view request for {:?}", other)
+        }
+
+        // // TODO now arbitrarly just adding a TextView with new controller.
+        //
+        // let buffer: Box<dyn Buffer> = Box::new(DefaultBuffer::empty());
+        // let arc = Arc::new(Mutex::new(buffer));
+        // let mut view = SfyriTextView::new(arc);
+        //
+        // self.siv.add_fullscreen_layer(view);
+    }
 }

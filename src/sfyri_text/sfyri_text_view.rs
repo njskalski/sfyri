@@ -20,7 +20,6 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::buffer::buffer_trait::{Buffer, BufferContent};
 use crate::cursor_set::CursorSet;
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use core::borrow::Borrow;
@@ -49,6 +48,7 @@ use std::sync::{Arc, Mutex};
 use std::usize::MAX;
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;
+use crate::buffer::buffer_state::BufferState;
 
 const INDEX_MARGIN: usize = 1;
 const PAGE_WIDTH: usize = 80;
@@ -81,17 +81,16 @@ impl SfyriTextView {
 //TODO(njskalski): handle too small space.
 impl View for SfyriTextView {
     fn draw(&self, printer: &Printer) {
-        let content_lock = self.s.buffer.lock().unwrap();
-        let content: &dyn BufferContent = *content_lock.get_content();
-        let line_count: usize = content.len_lines();
-        let index_length = line_count.to_string().len();
+        let buffer: &BufferState = self.s.buffer.borrow();
+        let index_length = buffer.len_lines().to_string().len();
         let cursors = &self.s.cursor_set;
+
 
         let view_size = self.last_view_size.expect("view size not known.");
 
         //index + INDEX_MARGIN ----------------------------------------------------------------
         for line_no in
-            (self.position.y)..(cmp::min(content.len_lines(), self.position.y + view_size.y))
+            (self.position.y)..(cmp::min(buffer.len_lines(), self.position.y + view_size.y))
         {
             let mut x: usize = 0;
 
@@ -119,14 +118,16 @@ impl View for SfyriTextView {
         //line --------------------------------------------------------------------------------
 
         for line_no in
-            (self.position.y)..(cmp::min(content.len_lines(), self.position.y + view_size.y))
+            (self.position.y)..(cmp::min(buffer.len_lines(), self.position.y + view_size.y))
         {
             let y = line_no - self.position.y;
-            let line_offset = &content.line_to_char(line_no);
-            let line = &content.line(line_no);
+            let line_offset = &buffer.line_to_char(line_no);
+            // TODO never request for more line than the view can hold.
+            // TODO add test with extremely long line.
+            let line = &buffer.line(line_no);
 
             //this allow a cursor *after* the last character. It's actually needed.
-            let add = if line_no == content.len_lines() - 1 {
+            let add = if line_no == buffer.len_lines() - 1 {
                 1
             } else {
                 0
@@ -178,27 +179,27 @@ impl View for SfyriTextView {
     fn on_event(&mut self, event: Event) -> EventResult {
         let mut consumed = true;
         match event {
-            Event::Char(c) => {
-                self.s.add_text(&c.to_string());
-            }
-            Event::Key(Key::Enter) => {
-                self.s.add_text(&'\n'.to_string());
-            }
-            Event::Key(Key::Backspace) => {
-                self.s.backspace();
-            }
-            Event::Key(Key::Left) => {
-                self.s.arrow_left();
-            }
-            Event::Key(Key::Right) => {
-                self.s.arrow_right();
-            }
-            Event::Key(Key::Up) => {
-                self.s.arrow_up();
-            }
-            Event::Key(Key::Down) => {
-                self.s.arrow_down();
-            }
+            // Event::Char(c) => {
+            //     self.s.add_text(&c.to_string());
+            // }
+            // Event::Key(Key::Enter) => {
+            //     self.s.add_text(&'\n'.to_string());
+            // }
+            // Event::Key(Key::Backspace) => {
+            //     self.s.backspace();
+            // }
+            // Event::Key(Key::Left) => {
+            //     self.s.arrow_left();
+            // }
+            // Event::Key(Key::Right) => {
+            //     self.s.arrow_right();
+            // }
+            // Event::Key(Key::Up) => {
+            //     self.s.arrow_up();
+            // }
+            // Event::Key(Key::Down) => {
+            //     self.s.arrow_down();
+            // }
             //TODO(njskalski): implement scrolling up
             //            Event::Key(Key::PageUp) => {
             //                self.s.page_up()

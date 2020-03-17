@@ -19,29 +19,29 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::buffer::buffer_trait::{Buffer, BufferContent};
 use crate::cursor_set::CursorSet;
 use crate::edit_event::EditEvent;
 use crate::svc::State;
 use std::borrow::{Borrow, BorrowMut};
 use std::sync::{Arc, Mutex};
 use unicode_segmentation::UnicodeSegmentation;
+use crate::buffer::buffer_state::BufferState;
 
 // This is supposed to be a serializable state of view
 // Impossible. Pointer will never be serializable.
-#[derive(Clone, Send)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SfyriTextState {
     // Not sure if anyone except View have any use of buffer (async write?). Will leave it now like this.
-    pub buffer: Arc<Mutex<Box<dyn Buffer>>>,
+    pub buffer: Arc<BufferState>,
     pub cursor_set: CursorSet,
 }
 
 impl State for SfyriTextState {}
 
 impl SfyriTextState {
-    pub fn new(buffer: Arc<Mutex<Box<Buffer>>>) -> Self {
+    pub fn new(buffer: Arc<BufferState>) -> Self {
         SfyriTextState {
-            buffer: buffer,
+            buffer,
             cursor_set: CursorSet::single(),
         }
     }
@@ -72,52 +72,49 @@ impl SfyriTextState {
             unicode_segmentation::UnicodeSegmentation::graphemes(text.to_string().as_str(), true)
                 .count();
 
-        let mut buffer_locked = self.buffer.lock().unwrap();
-        buffer_locked.submit_events(edit_events);
-        let content: &dyn BufferContent = *buffer_locked.get_content();
-        self.cursor_set.move_right_by(content, text_len);
+        self.cursor_set.move_right_by(self.buffer.as_ref(), text_len);
     }
 
-    // TODO(njskalski): fix, test
-    pub fn backspace(&mut self) {
-        let mut edit_events: Vec<EditEvent> = self
-            .cursor_set
-            .set()
-            .iter()
-            .filter(|&cursor| cursor.a > 0)
-            .map(|ref cursor| EditEvent::Change {
-                offset: cursor.a - 1,
-                length: 1,
-                content: "".to_string(),
-            })
-            .collect();
-        edit_events.reverse();
-
-        let mut buffer_locked = self.buffer.lock().unwrap();
-        buffer_locked.submit_events(edit_events);
-        self.cursor_set.move_left();
-    }
-
-    pub fn arrow_left(&mut self) {
-        self.cursor_set.move_left();
-    }
-
-    pub fn arrow_right(&mut self) {
-        let buffer_locked = self.buffer.lock().unwrap();
-        &self.cursor_set.move_right(*buffer_locked.get_content());
-    }
-
-    pub fn arrow_up(&mut self) {
-        let buffer_locked = self.buffer.lock().unwrap();
-        &self
-            .cursor_set
-            .move_vertically_by(*buffer_locked.get_content(), -1);
-    }
-
-    pub fn arrow_down(&mut self) {
-        let buffer_locked = self.buffer.lock().unwrap();
-        &self
-            .cursor_set
-            .move_vertically_by(*buffer_locked.get_content(), 1);
-    }
+    // // TODO(njskalski): fix, test
+    // pub fn backspace(&mut self) {
+    //     let mut edit_events: Vec<EditEvent> = self
+    //         .cursor_set
+    //         .set()
+    //         .iter()
+    //         .filter(|&cursor| cursor.a > 0)
+    //         .map(|ref cursor| EditEvent::Change {
+    //             offset: cursor.a - 1,
+    //             length: 1,
+    //             content: "".to_string(),
+    //         })
+    //         .collect();
+    //     edit_events.reverse();
+    //
+    //     let mut buffer_locked = self.buffer.lock().unwrap();
+    //     buffer_locked.submit_events(edit_events);
+    //     self.cursor_set.move_left();
+    // }
+    //
+    // pub fn arrow_left(&mut self) {
+    //     self.cursor_set.move_left();
+    // }
+    //
+    // pub fn arrow_right(&mut self) {
+    //     let buffer_locked = self.buffer.lock().unwrap();
+    //     &self.cursor_set.move_right(*buffer_locked.get_content());
+    // }
+    //
+    // pub fn arrow_up(&mut self) {
+    //     let buffer_locked = self.buffer.lock().unwrap();
+    //     &self
+    //         .cursor_set
+    //         .move_vertically_by(*buffer_locked.get_content(), -1);
+    // }
+    //
+    // pub fn arrow_down(&mut self) {
+    //     let buffer_locked = self.buffer.lock().unwrap();
+    //     &self
+    //         .cursor_set
+    //         .move_vertically_by(*buffer_locked.get_content(), 1);
+    // }
 }

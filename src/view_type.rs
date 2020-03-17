@@ -20,8 +20,11 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#[derive(Clone, Copy, Debug)]
+use crate::buffer::buffer_state::BufferState;
+use std::sync::Arc;
+
+#[derive(Clone, Debug)]
 pub enum ViewType {
-    SfyriTextView,
+    SfyriTextView{ cid : usize, s : Arc<BufferState> },
     FuzzyView,
 }

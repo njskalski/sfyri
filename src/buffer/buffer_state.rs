@@ -18,14 +18,15 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 use crate::buffer::wrapped_rope::WrappedRope;
 use crate::cursor_set::CursorSet;
 use crate::svc::State;
-use ropey::Rope;
+use ropey::{Rope, RopeSlice};
 use serde::{Deserializer, Serializer};
 use std::borrow::Borrow;
 use std::sync::Arc;
+use std::str::Chars;
 
 // Cursors are not part of BufferState, for now.
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BufferState {
     w: WrappedRope,
     prev: Option<Arc<BufferState>>,
@@ -71,5 +72,11 @@ impl BufferState {
 
     pub fn get_rope(&self) -> &Rope {
         &self.w.r
+    }
+
+    // TODO this should be removed for a bounded line request (?) \
+    // OR make it return an iterator over line.
+    pub fn line(&self, line_idx : usize) -> String {
+        self.w.r.line(line_idx).to_string().clone()
     }
 }

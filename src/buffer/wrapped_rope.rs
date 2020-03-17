@@ -21,7 +21,7 @@ use serde::export::fmt;
 use serde::export::Formatter;
 use serde::{Deserializer, Serializer};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct WrappedRope {
     pub r: Rope,
 }
