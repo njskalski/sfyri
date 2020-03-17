@@ -20,7 +20,9 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::buffer::buffer_trait::{Buffer, BufferContent};
 use crate::cursor_set::CursorSet;
+use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use core::borrow::Borrow;
 use cursive::direction::Direction;
 use cursive::event::{Event, EventResult, Key, MouseButton, MouseEvent};
@@ -47,8 +49,6 @@ use std::sync::{Arc, Mutex};
 use std::usize::MAX;
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;
-use crate::sfyri_text::sfyri_text_state::SfyriTextState;
-use crate::buffer::buffer_trait::{Buffer, BufferContent};
 
 const INDEX_MARGIN: usize = 1;
 const PAGE_WIDTH: usize = 80;
@@ -73,7 +73,7 @@ impl SfyriTextView {
         IdView::new("text_view", view)
     }
 
-    pub fn update_state(&mut self, s : Arc<SfyriTextState>) {
+    pub fn update_state(&mut self, s: Arc<SfyriTextState>) {
         self.s = s;
     }
 }

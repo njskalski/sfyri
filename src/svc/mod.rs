@@ -15,38 +15,68 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use serde::{Deserialize, Serialize};
+use std::borrow::Borrow;
 use std::ops::Deref;
 use std::sync::Arc;
-use std::borrow::Borrow;
-use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
 
-pub trait State: Serialize + Sized {}
+pub trait State: Serialize + DeserializeOwned + Sized {
+    fn is_versioned(&self) -> bool {
+        false
+    }
+
+    fn can_undo(&self) -> bool {
+        false
+    }
+
+    fn can_redo(&self) -> bool {
+        false
+    }
+
+    fn get_next(&self) -> Option<Self> {
+        None
+    }
+
+    fn get_prev(&self) -> Option<Self> {
+        None
+    }
+
+    fn drop_predecessors(&mut self) {}
+    fn drop_successors(&mut self) {}
+
+    fn select(&mut self) {
+        self.drop_successors();
+        self.drop_predecessors();
+    }
+}
 
 pub trait Controller<ST: State> {
     fn get_state(&self) -> StateRef<ST>;
+    fn set_state(&mut self, s: Arc<ST>);
 }
 
 // It's a wrapper to take away writing capabilities.
 #[derive(Clone)]
-pub struct StateRef<ST : State> {
-    arc : Arc<ST>
+pub struct StateRef<ST: State> {
+    arc: Arc<ST>,
 }
 
-unsafe impl <ST : State> Send for StateRef<ST> {}
+unsafe impl<ST: State> Send for StateRef<ST> {}
 
-impl <ST : State> StateRef<ST> {
-    fn new(arc : Arc<ST>) -> Self {
+impl<ST: State> StateRef<ST> {
+    fn new(arc: Arc<ST>) -> Self {
         StateRef { arc }
     }
 }
 
-impl <ST : State> Borrow<ST> for StateRef<ST> {
+impl<ST: State> Borrow<ST> for StateRef<ST> {
     fn borrow(&self) -> &ST {
         self.arc.borrow()
     }
 }
 
-impl <ST : State>  From<Arc<ST>> for StateRef<ST> {
+impl<ST: State> From<Arc<ST>> for StateRef<ST> {
     fn from(arc: Arc<ST>) -> Self {
         StateRef::new(arc)
     }

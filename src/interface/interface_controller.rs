@@ -62,4 +62,8 @@ impl Controller<InterfaceState> for InterfaceController {
     fn get_state(&self) -> StateRef<InterfaceState> {
         self.state.clone().into()
     }
+
+    fn set_state(&mut self, s: Arc<InterfaceState>) {
+        self.state = s;
+    }
 }

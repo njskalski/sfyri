@@ -19,8 +19,8 @@ use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use cursive::Cursive;
 use std::string::ToString;
-use std::thread;
 use std::sync::{Arc, Mutex};
+use std::thread;
 
 pub enum InterfaceWorkerResult {
     Quit,

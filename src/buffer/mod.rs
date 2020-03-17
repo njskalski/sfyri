@@ -15,4 +15,7 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod default_buffer;
+pub mod buffer_controller;
+pub mod buffer_state;
+
+mod wrapped_rope;

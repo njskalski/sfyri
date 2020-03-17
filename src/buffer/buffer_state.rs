@@ -17,5 +17,15 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 //This file is a complete rewrite
 
+use crate::svc::State;
+use ropey::Rope;
+use serde::{Serializer, Deserializer};
+use std::borrow::Borrow;
+use crate::buffer::wrapped_rope::WrappedRope;
 
+#[derive(Clone, Serialize, Deserialize)]
+pub struct BufferState {
+    r : WrappedRope
+}
 
+impl State for BufferState {}

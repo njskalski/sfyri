@@ -21,7 +21,6 @@ use crate::svc::{Controller, StateRef};
 pub struct SfyriTextController {}
 
 impl Controller<SfyriTextState> for SfyriTextController {
-
     fn get_state(&self) -> StateRef<SfyriTextState> {
         unimplemented!()
     }

@@ -19,13 +19,13 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::buffer::buffer_trait::{Buffer, BufferContent};
 use crate::cursor_set::CursorSet;
 use crate::edit_event::EditEvent;
+use crate::svc::State;
 use std::borrow::{Borrow, BorrowMut};
 use std::sync::{Arc, Mutex};
-use crate::buffer::buffer_trait::{Buffer, BufferContent};
 use unicode_segmentation::UnicodeSegmentation;
-use crate::svc::State;
 
 // This is supposed to be a serializable state of view
 // Impossible. Pointer will never be serializable.
