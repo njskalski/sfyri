@@ -20,15 +20,17 @@ extern crate clap;
 #[macro_use]
 extern crate log;
 extern crate ropey;
+#[macro_use]
+extern crate serde;
 
 use std::borrow::BorrowMut;
 
 mod buffer;
-mod cursor_set;
+// mod cursor_set;
 mod edit_event;
 mod interface;
 mod logger;
-mod stextview;
+// mod sfyri_text;
 mod svc;
 mod view;
 mod view_type;

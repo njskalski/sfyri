@@ -17,7 +17,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use crate::interface::interface_state::InterfaceState;
 use crate::interface::interface_worker::{InterfaceWorker, InterfaceWorkerResult};
-use crate::svc::Controller;
+use crate::svc::{Controller, StateRef};
 use std::ops::Deref;
 use std::sync::Arc;
 use std::thread;
@@ -59,9 +59,7 @@ impl InterfaceController {
 }
 
 impl Controller<InterfaceState> for InterfaceController {
-    fn update(&mut self) {}
-
-    fn get_state(&self) -> Arc<InterfaceState> {
-        self.state.clone()
+    fn get_state(&self) -> StateRef<InterfaceState> {
+        self.state.clone().into()
     }
 }

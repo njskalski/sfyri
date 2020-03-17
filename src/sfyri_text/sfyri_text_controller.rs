@@ -15,4 +15,14 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod default_buffer;
+use crate::sfyri_text::sfyri_text_state::SfyriTextState;
+use crate::svc::{Controller, StateRef};
+
+pub struct SfyriTextController {}
+
+impl Controller<SfyriTextState> for SfyriTextController {
+
+    fn get_state(&self) -> StateRef<SfyriTextState> {
+        unimplemented!()
+    }
+}

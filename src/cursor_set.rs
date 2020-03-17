@@ -34,7 +34,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 use std::borrow::Borrow;
 use std::collections::HashSet;
 
-use crate::buffer::buffer_trait::BufferContent;
+use crate::buffer::default_buffer::BufferState;
 
 const NEWLINE_LENGTH: usize = 1; // TODO(njskalski): add support for multisymbol newlines?
 
@@ -140,11 +140,11 @@ impl CursorSet {
         }
     }
 
-    pub fn move_right(&mut self, bc: &dyn BufferContent) {
+    pub fn move_right(&mut self, bc: &BufferState) {
         self.move_right_by(bc, 1);
     }
 
-    pub fn move_right_by(&mut self, bc: &dyn BufferContent, l: usize) {
+    pub fn move_right_by(&mut self, bc: &BufferState, l: usize) {
         let len = bc.len_chars();
 
         for mut c in &mut self.set {
@@ -156,7 +156,7 @@ impl CursorSet {
         }
     }
 
-    pub fn move_vertically_by(&mut self, bc: &dyn BufferContent, l: isize) {
+    pub fn move_vertically_by(&mut self, bc: &BufferState, l: isize) {
         if l == 0 {
             return;
         }

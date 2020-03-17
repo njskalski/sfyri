@@ -18,8 +18,9 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 use crate::svc::State;
 use crate::view::view_trait::View;
 
+#[derive(Clone, Serialize, Deserialize)]
 pub enum InterfaceState {
-    Ready { views: Vec<Box<dyn View>> },
+    Ready,
     Finished,
 }
 
@@ -27,6 +28,6 @@ impl State for InterfaceState {}
 
 impl InterfaceState {
     pub fn new() -> Self {
-        InterfaceState::Ready { views: vec![] }
+        InterfaceState::Ready
     }
 }

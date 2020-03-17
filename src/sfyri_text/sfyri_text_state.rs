@@ -25,17 +25,22 @@ use std::borrow::{Borrow, BorrowMut};
 use std::sync::{Arc, Mutex};
 use crate::buffer::buffer_trait::{Buffer, BufferContent};
 use unicode_segmentation::UnicodeSegmentation;
+use crate::svc::State;
 
 // This is supposed to be a serializable state of view
-pub struct TextViewState {
+// Impossible. Pointer will never be serializable.
+#[derive(Clone, Send)]
+pub struct SfyriTextState {
     // Not sure if anyone except View have any use of buffer (async write?). Will leave it now like this.
     pub buffer: Arc<Mutex<Box<dyn Buffer>>>,
     pub cursor_set: CursorSet,
 }
 
-impl TextViewState {
+impl State for SfyriTextState {}
+
+impl SfyriTextState {
     pub fn new(buffer: Arc<Mutex<Box<Buffer>>>) -> Self {
-        TextViewState {
+        SfyriTextState {
             buffer: buffer,
             cursor_set: CursorSet::single(),
         }

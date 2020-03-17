@@ -17,11 +17,37 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::ops::Deref;
 use std::sync::Arc;
+use std::borrow::Borrow;
+use serde::{Deserialize, Serialize};
 
-pub trait State {}
+pub trait State: Serialize + Sized {}
 
 pub trait Controller<ST: State> {
-    //contract: parent state is updated.
-    fn update(&mut self);
-    fn get_state(&self) -> Arc<ST>;
+    fn get_state(&self) -> StateRef<ST>;
+}
+
+// It's a wrapper to take away writing capabilities.
+#[derive(Clone)]
+pub struct StateRef<ST : State> {
+    arc : Arc<ST>
+}
+
+unsafe impl <ST : State> Send for StateRef<ST> {}
+
+impl <ST : State> StateRef<ST> {
+    fn new(arc : Arc<ST>) -> Self {
+        StateRef { arc }
+    }
+}
+
+impl <ST : State> Borrow<ST> for StateRef<ST> {
+    fn borrow(&self) -> &ST {
+        self.arc.borrow()
+    }
+}
+
+impl <ST : State>  From<Arc<ST>> for StateRef<ST> {
+    fn from(arc: Arc<ST>) -> Self {
+        StateRef::new(arc)
+    }
 }

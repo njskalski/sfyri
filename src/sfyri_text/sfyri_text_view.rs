@@ -47,7 +47,7 @@ use std::sync::{Arc, Mutex};
 use std::usize::MAX;
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;
-use crate::stextview::text_view_state::TextViewState;
+use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use crate::buffer::buffer_trait::{Buffer, BufferContent};
 
 const INDEX_MARGIN: usize = 1;
@@ -55,22 +55,26 @@ const PAGE_WIDTH: usize = 80;
 
 // This is suppose to be a view of view, that is to visualize state.
 pub struct SfyriTextView {
-    s: TextViewState,
+    s: Arc<SfyriTextState>,
     position: Vec2,               // position of upper left corner of view in file
     last_view_size: Option<Vec2>, //not sure if using properly
 }
 
 impl SfyriTextView {
-    pub fn new(buffer: Arc<Mutex<Box<Buffer>>>) -> IdView<Self> {
+    pub fn new(s: Arc<SfyriTextState>) -> IdView<Self> {
         let syntax_highlighting: bool = false;
 
         let mut view = SfyriTextView {
-            s: TextViewState::new(buffer),
+            s,
             position: Vec2::new(0, 0),
             last_view_size: None,
         };
 
         IdView::new("text_view", view)
+    }
+
+    pub fn update_state(&mut self, s : Arc<SfyriTextState>) {
+        self.s = s;
     }
 }
 
