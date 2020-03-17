@@ -15,32 +15,39 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 use ropey::Rope;
-use serde::{Serializer, Deserializer};
-use serde::export::Formatter;
-use serde::export::fmt;
 use serde::de::{self, Visitor};
+use serde::export::fmt;
+use serde::export::Formatter;
+use serde::{Deserializer, Serializer};
 
 #[derive(Clone)]
 pub struct WrappedRope {
-    pub r : Rope
+    pub r: Rope,
 }
 
+impl WrappedRope {
+    pub fn empty() -> Self {
+        WrappedRope { r: Rope::new() }
+    }
+}
 
 // I have no idea what I'm doing: https://serde.rs/impl-deserialize.html
 
-
 impl serde::Serialize for WrappedRope {
-    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error> where
-        S: Serializer {
+    fn serialize<S>(&self, serializer: S) -> Result<<S as Serializer>::Ok, <S as Serializer>::Error>
+    where
+        S: Serializer,
+    {
         serializer.serialize_str(&self.r.to_string())
     }
 }
 
-impl <'de> serde::Deserialize<'de> for WrappedRope {
-    fn deserialize<D>(deserializer: D) -> Result<Self, <D as Deserializer<'de>>::Error> where
-        D: Deserializer<'de> {
+impl<'de> serde::Deserialize<'de> for WrappedRope {
+    fn deserialize<D>(deserializer: D) -> Result<Self, <D as Deserializer<'de>>::Error>
+    where
+        D: Deserializer<'de>,
+    {
         deserializer.deserialize_string(WrappedRopeVisitor)
     }
 }
@@ -54,8 +61,18 @@ impl<'de> de::Visitor<'de> for WrappedRopeVisitor {
         formatter.write_str("utf-8 string")
     }
 
-    fn visit_str<E>(self, value: &str) -> Result<Self::Value, E> where
-        E: de::Error, {
-        Ok( WrappedRope { r : Rope::from_str(value) } )
+    fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(WrappedRope {
+            r: Rope::from_str(value),
+        })
+    }
+}
+
+impl From<Rope> for WrappedRope {
+    fn from(r: Rope) -> Self {
+        WrappedRope { r }
     }
 }

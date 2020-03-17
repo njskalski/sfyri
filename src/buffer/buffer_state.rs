@@ -15,17 +15,61 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-//This file is a complete rewrite
-
+use crate::buffer::wrapped_rope::WrappedRope;
+use crate::cursor_set::CursorSet;
 use crate::svc::State;
 use ropey::Rope;
-use serde::{Serializer, Deserializer};
+use serde::{Deserializer, Serializer};
 use std::borrow::Borrow;
-use crate::buffer::wrapped_rope::WrappedRope;
+use std::sync::Arc;
+
+// Cursors are not part of BufferState, for now.
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct BufferState {
-    r : WrappedRope
+    w: WrappedRope,
+    prev: Option<Arc<BufferState>>,
+    next: Option<Arc<BufferState>>,
 }
 
 impl State for BufferState {}
+
+impl BufferState {
+    pub fn empty() -> Self {
+        BufferState {
+            w: WrappedRope::empty(),
+            prev: None,
+            next: None,
+        }
+    }
+
+    pub fn new(r: Rope, prev: Option<Arc<BufferState>>, next: Option<Arc<BufferState>>) -> Self {
+        BufferState {
+            w: WrappedRope::from(r),
+            prev,
+            next,
+        }
+    }
+
+    // Boring methods:
+
+    pub fn len_chars(&self) -> usize {
+        self.w.r.len_chars()
+    }
+
+    pub fn len_lines(&self) -> usize {
+        self.w.r.len_lines()
+    }
+
+    pub fn char_to_line(&self, char_idx: usize) -> usize {
+        self.w.r.char_to_line(char_idx)
+    }
+
+    pub fn line_to_char(&self, line_idx: usize) -> usize {
+        self.w.r.line_to_char(line_idx)
+    }
+
+    pub fn get_rope(&self) -> &Rope {
+        &self.w.r
+    }
+}

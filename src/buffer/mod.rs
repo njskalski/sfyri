@@ -18,4 +18,6 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 pub mod buffer_controller;
 pub mod buffer_state;
 
+mod apply_events;
+mod edit_event;
 mod wrapped_rope;

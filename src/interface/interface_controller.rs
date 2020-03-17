@@ -59,11 +59,15 @@ impl InterfaceController {
 }
 
 impl Controller<InterfaceState> for InterfaceController {
-    fn get_state(&self) -> StateRef<InterfaceState> {
-        self.state.clone().into()
+    fn get_state(&self) -> Option<StateRef<InterfaceState>> {
+        Some(self.state.clone().into())
     }
 
     fn set_state(&mut self, s: Arc<InterfaceState>) {
         self.state = s;
+    }
+
+    fn is_state_ready(&self) -> bool {
+        true
     }
 }

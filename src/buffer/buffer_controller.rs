@@ -15,20 +15,52 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::buffer::apply_events::apply_events;
 use crate::buffer::buffer_state::BufferState;
+use crate::buffer::wrapped_rope::WrappedRope;
+use crate::edit_event::EditEvent;
 use crate::svc::{Controller, StateRef};
+use std::borrow::Borrow;
+use std::mem;
+use std::ops::Deref;
 use std::sync::Arc;
 
 pub struct BufferController {
-    s: Arc<BufferState>,
+    s: Option<Arc<BufferState>>,
+}
+
+impl BufferController {
+    fn advance_state(&mut self, events: &Vec<EditEvent>) {
+        if self.s.is_none() {
+            warn!("Buffer controller called to advance on empty buffer state! Initializing with empty state to avoid crash. This should not have happened.");
+            self.s = Some(Arc::new(BufferState::empty()))
+        }
+
+        let old_state = self.s.take().unwrap();
+
+        let old_rope = old_state.get_rope();
+        let (new_rope, num_common_lines) = apply_events(&old_rope, events);
+
+        let new_state = BufferState::new(
+            new_rope,
+            None,
+            Some(old_state)
+        );
+
+        self.s = Some(Arc::new(new_state))
+    }
 }
 
 impl Controller<BufferState> for BufferController {
-    fn get_state(&self) -> StateRef<BufferState> {
-        StateRef::from(self.s.clone())
+    fn get_state(&self) -> Option<StateRef<BufferState>> {
+        self.s.as_ref().map(|arc| StateRef::from(arc.clone()))
     }
 
-    fn set_state(&mut self, s: Arc<BufferState>) {
-        self.s = s;
+    fn set_state(&mut self, state_op: Arc<BufferState>) {
+        self.s = Some(state_op);
+    }
+
+    fn is_state_ready(&self) -> bool {
+        self.s.is_some()
     }
 }

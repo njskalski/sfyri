@@ -33,18 +33,17 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::borrow::Borrow;
 use std::collections::HashSet;
-
-use crate::buffer::default_buffer::BufferState;
+use crate::buffer::buffer_state::BufferState;
 
 const NEWLINE_LENGTH: usize = 1; // TODO(njskalski): add support for multisymbol newlines?
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Selection {
     pub b: usize, //begin inclusive
     pub e: usize, //end EXCLUSIVE (as *everywhere*)
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Cursor {
     pub s: Option<Selection>, // selection
     pub a: usize,             //anchor
@@ -98,7 +97,7 @@ impl Into<Cursor> for usize {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct CursorSet {
     set: Vec<Cursor>,
 }
@@ -161,7 +160,6 @@ impl CursorSet {
             return;
         }
 
-        let string = bc.as_string();
         let last_line_idx = bc.len_lines() - 1;
 
         for mut c in &mut self.set {

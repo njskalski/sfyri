@@ -15,11 +15,11 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::borrow::Borrow;
 use std::ops::Deref;
 use std::sync::Arc;
-use serde::de::DeserializeOwned;
 
 pub trait State: Serialize + DeserializeOwned + Sized {
     fn is_versioned(&self) -> bool {
@@ -52,8 +52,15 @@ pub trait State: Serialize + DeserializeOwned + Sized {
 }
 
 pub trait Controller<ST: State> {
-    fn get_state(&self) -> StateRef<ST>;
+    // Rationale: Controller can be in incomplete state to render a complete state.
+    fn get_state(&self) -> Option<StateRef<ST>>;
+
+    // TODO: add to docs.
+    // Rationale: Controller can be re-set into operation with deserialized state by parent controller.
+    // I currently do not support un-setting controller. This contract might come in handy in the future.
     fn set_state(&mut self, s: Arc<ST>);
+
+    fn is_state_ready(&self) -> bool;
 }
 
 // It's a wrapper to take away writing capabilities.
