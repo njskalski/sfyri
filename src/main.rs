@@ -30,7 +30,7 @@ mod cursor_set;
 mod edit_event;
 mod interface;
 mod logger;
-// mod sfyri_text;
+mod sfyri_text;
 mod svc;
 mod view;
 mod view_type;
