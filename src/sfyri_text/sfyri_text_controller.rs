@@ -19,7 +19,20 @@ use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use crate::svc::Controller;
 use std::sync::Arc;
 
-pub struct SfyriTextController {}
+pub struct SfyriTextController {
+    s : Option<Arc<SfyriTextState>>
+
+}
+
+impl SfyriTextController {
+    pub fn empty() -> Self {
+        SfyriTextController {
+            s : Some(Arc::new(SfyriTextState::empty()))
+
+        }
+    }
+
+}
 
 impl Controller<SfyriTextState> for SfyriTextController {
     fn get_state(&self) -> Option<Arc<SfyriTextState>> {

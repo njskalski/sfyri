@@ -60,8 +60,6 @@ fn main() {
 
     let mut ic: InterfaceController = InterfaceController::new();
 
-    ic.tmp_add_view();
-
     ic.tmp_join();
 
     debug!("goodbye!");

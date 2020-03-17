@@ -16,12 +16,14 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::view_type::ViewType;
+use crate::interface::interface_state::InterfaceState;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub enum InterfaceMsg {
     ShutDown,
     Redraw,
-    AddView { t: ViewType },
+    UpdateState{state : Arc<InterfaceState>}
 }
 
 #[derive(Clone, Copy, Debug)]

@@ -29,12 +29,13 @@ use crate::buffer::buffer_controller::BufferController;
 use std::collections::HashMap;
 use crate::buffer::buffer_state::BufferState;
 use std::borrow::Borrow;
+use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
 
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
     handle: Option<thread::JoinHandle<(InterfaceWorkerResult)>>,
     msgs: Sender<InterfaceMsg>,
-    buffer_controllers: HashMap<usize, BufferController>
+    tmp_textview_controller : SfyriTextController
 }
 
 impl InterfaceController {
@@ -49,24 +50,9 @@ impl InterfaceController {
             state: Arc::new(InterfaceState::new()),
             handle: Some(handle),
             msgs: sender,
-            buffer_controllers : HashMap::new()
+            // TODO remove
+            tmp_textview_controller : SfyriTextController::empty()
         }
-    }
-
-    // gets buffer state from controller id.
-    pub fn tmp_get_state_from_cid(&self, cid : usize) -> Arc<BufferState> {
-        self.buffer_controllers.get(&cid).unwrap().get_state().unwrap()
-    }
-
-    pub fn tmp_add_view(&mut self) {
-
-        self.buffer_controllers.insert(1, BufferController::new());
-
-        let state_ref = self.tmp_get_state_from_cid(1);
-
-        self.msgs.send(InterfaceMsg::AddView {
-            t: ViewType::SfyriTextView{ cid : 1, s: state_ref }
-        });
     }
 
     pub fn tmp_join(&mut self) {

@@ -46,6 +46,10 @@ impl SfyriTextState {
         }
     }
 
+    pub fn empty() -> Self {
+        SfyriTextState::new(Arc::new(BufferState::empty()))
+    }
+
     /// Returns the position of the cursor in the content string.
     pub fn cursors(&self) -> &CursorSet {
         &self.cursor_set
