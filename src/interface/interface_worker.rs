@@ -34,7 +34,7 @@ pub struct InterfaceWorker {
     sender: Sender<InterfaceBackMsg>,
     siv: Cursive,
     tick: u64,
-    is : Arc<InterfaceState>
+    // is : Arc<InterfaceState>
 }
 
 impl InterfaceWorker {
@@ -78,9 +78,9 @@ impl InterfaceWorker {
                         debug!("received shutdown signal.");
                         self.siv.quit();
                     }
-                    InterfaceMsg::UpdateState {state } => {
-                        self.is = state;
-                    }
+                    // InterfaceMsg::UpdateState {state } => {
+                    //     self.is = state;
+                    // }
                     other => {
                         debug!("Ignoring InterfaceMsg of {:?}", other)
                     }

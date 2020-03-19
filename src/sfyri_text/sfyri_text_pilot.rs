@@ -15,7 +15,14 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod sfyri_text_controller;
-pub mod sfyri_text_state;
-pub mod sfyri_text_view;
-pub mod sfyri_text_pilot;
+use crate::sfyri_text::sfyri_text_state::SfyriTextState;
+use crate::svc::Pilot;
+use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
+
+struct SfyriTextPilot {}
+
+impl Pilot<SfyriTextController> for SfyriTextPilot {
+    fn is_live(&self) -> bool {
+        unimplemented!()
+    }
+}

@@ -63,3 +63,7 @@ pub trait Controller<ST: State> {
 
     fn is_state_ready(&self) -> bool;
 }
+
+pub trait Pilot<C : Controller<ST : State>> {
+    fn is_live(&self) -> bool;
+}
