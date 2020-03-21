@@ -66,8 +66,8 @@ impl<ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg
         let id = *self.next_pilot_id.borrow();
         *self.next_pilot_id.borrow_mut() += 1;
 
-        self.p.borrow_mut().insert(id, SimplePilotDesc::new(s: sb, r:  r, id: id));
+        self.p.borrow_mut().insert(id, SimplePilotDesc::new(sb,   r,  id));
 
-        SimplePilotImpl::new(s, r: rb, id)
+        SimplePilotImpl::new(s, rb, id)
     }
 }
