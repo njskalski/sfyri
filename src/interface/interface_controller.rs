@@ -37,10 +37,8 @@ pub struct InterfaceController {
 
 impl InterfaceController {
     pub fn new() -> Self {
-        let pc = SimplePilotManagerImpl::<InterfaceMsg, InterfaceBackMsg>::new();=
-
+        let pc = SimplePilotManagerImpl::<InterfaceMsg, InterfaceBackMsg>::new();
         let (ss, sr) = crossbeam_channel::unbounded::<Arc<InterfaceState>>();
-
         let handle = InterfaceWorker::start(pc.get_pilot(), sr);
 
         InterfaceController {
