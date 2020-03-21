@@ -17,16 +17,18 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use crate::interface::interface_state::InterfaceState;
 
+use crate::svc::simple_impl::{SimplePilotImpl, SimplePilotManagerImpl};
 use std::sync::Arc;
+
+pub type InterfacePilot = SimplePilotImpl<InterfaceMsg, InterfaceBackMsg>;
 
 #[derive(Clone, Debug)]
 pub enum InterfaceMsg {
-    ShutDown,
-    Redraw,
-    UpdateState { state: Arc<InterfaceState> },
+    PreDrawTick,
 }
 
 #[derive(Clone, Copy, Debug)]
 pub enum InterfaceBackMsg {
-    PreDrawTick,
+    ShutDown,
+    Redraw,
 }

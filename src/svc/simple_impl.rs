@@ -16,7 +16,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::svc::{Controller, Pilot, State};
-use crossbeam_channel::{Receiver, Sender};
+use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use std::borrow::BorrowMut;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -30,6 +30,10 @@ pub struct SimplePilotImpl<ForwardMsg: Send, BackMsg: Send> {
 impl<ForwardMsg: Send, BackMsg: Send> SimplePilotImpl<ForwardMsg, BackMsg> {
     fn new(s: Sender<ForwardMsg>, r: Receiver<BackMsg>, id: usize) -> Self {
         SimplePilotImpl { s, r, id }
+    }
+
+    pub fn try_recv(&self) -> Result<BackMsg, TryRecvError> {
+        self.r.try_recv()
     }
 }
 
@@ -57,17 +61,21 @@ pub struct SimplePilotManagerImpl<ForwardMsg: Send, BackMsg: Send> {
     next_pilot_id: RefCell<usize>,
 }
 
-impl <ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg> {
+impl<ForwardMsg: Send, BackMsg: Send>
+    SimplePilotManagerImpl<ForwardMsg, BackMsg>
+{
     pub fn new() -> Self {
         SimplePilotManagerImpl {
-            p : RefCell::new(HashMap::new()),
-            next_pilot_id : RefCell::new(0)
+            p: RefCell::new(HashMap::new()),
+            next_pilot_id: RefCell::new(0)
         }
     }
 }
 
 //ST : State, C : Controller<ST>,
-impl<ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg> {
+impl<ForwardMsg: Send, BackMsg: Send>
+    SimplePilotManagerImpl<ForwardMsg, BackMsg>
+{
     pub fn get_pilot(&self) -> SimplePilotImpl<ForwardMsg, BackMsg> {
         let (s, r) = crossbeam_channel::unbounded::<ForwardMsg>();
         let (sb, rb) = crossbeam_channel::unbounded::<BackMsg>();
@@ -75,7 +83,9 @@ impl<ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg
         let id = *self.next_pilot_id.borrow();
         *self.next_pilot_id.borrow_mut() += 1;
 
-        self.p.borrow_mut().insert(id, SimplePilotDesc::new(sb,   r,  id));
+        self.p
+            .borrow_mut()
+            .insert(id, SimplePilotDesc::new(sb, r, id));
 
         SimplePilotImpl::new(s, rb, id)
     }

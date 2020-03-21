@@ -15,11 +15,8 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
-
-
-use crossbeam_channel::{Receiver, Sender};
 use crate::svc::simple_impl::SimplePilotImpl;
+use crossbeam_channel::{Receiver, Sender};
 
 pub enum SfyriPilotMsg {}
 

@@ -16,7 +16,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use serde::de::DeserializeOwned;
-use serde::{Serialize};
+use serde::Serialize;
 use std::fmt::Debug;
 use std::sync::Arc;
 
@@ -67,5 +67,3 @@ pub trait Controller<ST: State> {
 pub trait Pilot /*<ST: State, C : Controller<ST>>*/ {
     fn is_live(&self) -> bool;
 }
-
-

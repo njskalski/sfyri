@@ -21,8 +21,6 @@ use crate::buffer::buffer_state::BufferState;
 use crate::edit_event::EditEvent;
 use crate::svc::Controller;
 
-
-
 use std::sync::Arc;
 
 pub struct BufferController {

@@ -16,6 +16,6 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 pub mod interface_controller;
-pub mod interface_msg;
+pub mod interface_pilot;
 pub mod interface_state;
 pub mod interface_worker;

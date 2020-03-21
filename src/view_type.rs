@@ -25,6 +25,6 @@ use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub enum ViewType {
-    SfyriTextView{ cid : usize, s : Arc<BufferState> },
+    SfyriTextView { cid: usize, s: Arc<BufferState> },
     FuzzyView,
 }

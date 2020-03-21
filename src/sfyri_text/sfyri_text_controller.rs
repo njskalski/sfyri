@@ -17,24 +17,24 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use crate::sfyri_text::sfyri_text_pilot::{SfyriPilotBackMsg, SfyriPilotMsg, SfyriTextPilot};
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
+use crate::svc::simple_impl::SimplePilotManagerImpl;
 use crate::svc::Controller;
 use crossbeam_channel::{Receiver, Sender};
 use std::borrow::Borrow;
-use std::cell::{RefCell};
-use std::collections::{HashMap};
+use std::cell::RefCell;
+use std::collections::HashMap;
 use std::sync::Arc;
-use crate::svc::simple_impl::SimplePilotManagerImpl;
 
 pub struct SfyriTextController {
     s: Option<Arc<SfyriTextState>>,
-    pc : SimplePilotManagerImpl<SfyriPilotMsg, SfyriPilotBackMsg>
+    pub pc: SimplePilotManagerImpl<SfyriPilotMsg, SfyriPilotBackMsg>,
 }
 
 impl SfyriTextController {
     pub fn empty() -> Self {
         SfyriTextController {
             s: Some(Arc::new(SfyriTextState::empty())),
-            pc : SimplePilotManagerImpl::new()
+            pc: SimplePilotManagerImpl::new(),
         }
     }
 }

@@ -15,9 +15,7 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
-
-
+use crate::interface::interface_pilot::{InterfaceBackMsg, InterfaceMsg, InterfacePilot};
 
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use cursive::Cursive;
@@ -30,28 +28,18 @@ pub enum InterfaceWorkerResult {
 }
 
 pub struct InterfaceWorker {
-    receiver: Receiver<InterfaceMsg>,
-    sender: Sender<InterfaceBackMsg>,
+    ip: InterfacePilot,
     siv: Cursive,
     tick: u64,
-    // is : Arc<InterfaceState>
 }
 
 impl InterfaceWorker {
-    pub fn start(
-        receiver: Receiver<InterfaceMsg>,
-        sender: Sender<InterfaceBackMsg>,
-    ) -> thread::JoinHandle<InterfaceWorkerResult> {
+    pub fn start(ip: InterfacePilot) -> thread::JoinHandle<InterfaceWorkerResult> {
         thread::Builder::new()
             .name("interface_worker".to_string())
             .spawn(move || {
                 let siv = Cursive::default();
-                let mut worker = InterfaceWorker {
-                    receiver,
-                    sender,
-                    siv,
-                    tick: 0,
-                };
+                let mut worker = InterfaceWorker { ip, siv, tick: 0 };
                 worker.main()
             })
             .unwrap()
@@ -69,12 +57,12 @@ impl InterfaceWorker {
 
             self.post_input_tick();
 
-            match self.receiver.try_recv() {
+            match self.ip.try_recv() {
                 Err(TryRecvError::Empty) => {}
                 Err(e) => debug!("worker main got error {:?}", e),
 
                 Ok(msg) => match msg {
-                    InterfaceMsg::ShutDown => {
+                    InterfaceBackMsg::ShutDown => {
                         debug!("received shutdown signal.");
                         self.siv.quit();
                     }

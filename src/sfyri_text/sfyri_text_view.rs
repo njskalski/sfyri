@@ -34,18 +34,12 @@ use cursive::view::View;
 
 use cursive::views::IdView;
 
-use cursive::{Printer};
-
-
-
+use cursive::Printer;
 
 use std::cmp;
 
-
-
-
 use std::string::ToString;
-use std::sync::{Arc};
+use std::sync::Arc;
 
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;

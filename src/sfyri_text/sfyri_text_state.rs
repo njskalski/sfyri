@@ -24,8 +24,7 @@ use crate::cursor_set::CursorSet;
 use crate::edit_event::EditEvent;
 use crate::svc::State;
 
-use std::sync::{Arc};
-
+use std::sync::Arc;
 
 // This is supposed to be a serializable state of view
 // Impossible. Pointer will never be serializable.

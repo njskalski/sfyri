@@ -19,33 +19,36 @@ use crate::interface::interface_state::InterfaceState;
 use crate::interface::interface_worker::{InterfaceWorker, InterfaceWorkerResult};
 use crate::svc::Controller;
 
+use crate::interface::interface_pilot::{InterfaceBackMsg, InterfaceMsg, InterfacePilot};
 use std::sync::Arc;
 use std::thread;
-use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
 
-use crossbeam_channel::{unbounded, Receiver, Sender};
 use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
-
+use crate::svc::simple_impl::SimplePilotManagerImpl;
+use crossbeam_channel::{unbounded, Receiver, Sender};
 
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
     handle: Option<thread::JoinHandle<InterfaceWorkerResult>>,
-    msgs: Sender<InterfaceMsg>,
+    pc: SimplePilotManagerImpl<InterfaceMsg, InterfaceBackMsg>,
     tmp_textview_controller: SfyriTextController,
 }
 
 impl InterfaceController {
     pub fn new() -> Self {
+        let pc = SimplePilotManagerImpl::<InterfaceMsg, InterfaceBackMsg>::new();
+        let pilot = pc.get_pilot();
+
         let (sender, receiver): (Sender<InterfaceMsg>, Receiver<InterfaceMsg>) = unbounded();
         let (sender_back, _receiver_back): (Sender<InterfaceBackMsg>, Receiver<InterfaceBackMsg>) =
             unbounded();
 
-        let handle = InterfaceWorker::start(receiver, sender_back);
+        let handle = InterfaceWorker::start(pc.get_pilot());
 
         InterfaceController {
             state: Arc::new(InterfaceState::new()),
             handle: Some(handle),
-            msgs: sender,
+            pc,
             // TODO remove
             tmp_textview_controller: SfyriTextController::empty(),
         }

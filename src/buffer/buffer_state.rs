@@ -18,9 +18,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 use crate::buffer::wrapped_rope::WrappedRope;
 
 use crate::svc::State;
-use ropey::{Rope};
-
-
+use ropey::Rope;
 
 use std::sync::Arc;
 

@@ -31,9 +31,8 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 // Newline is always an end of previous line, not a beginning of new.
 
-
-use std::collections::HashSet;
 use crate::buffer::buffer_state::BufferState;
+use std::collections::HashSet;
 
 const NEWLINE_LENGTH: usize = 1; // TODO(njskalski): add support for multisymbol newlines?
 
