@@ -16,10 +16,10 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
-use std::borrow::Borrow;
+use serde::{Serialize};
+
 use std::fmt::Debug;
-use std::ops::Deref;
+
 use std::sync::Arc;
 
 pub trait State: Clone + Debug + Serialize + DeserializeOwned + Sized + Send {

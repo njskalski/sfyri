@@ -16,12 +16,12 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::buffer::wrapped_rope::WrappedRope;
-use crate::cursor_set::CursorSet;
+
 use crate::svc::State;
-use ropey::{Rope, RopeSlice};
-use serde::{Deserializer, Serializer};
-use std::borrow::Borrow;
-use std::str::Chars;
+use ropey::{Rope};
+
+
+
 use std::sync::Arc;
 
 // Cursors are not part of BufferState, for now.

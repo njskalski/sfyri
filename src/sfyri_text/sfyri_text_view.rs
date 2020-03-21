@@ -21,32 +21,32 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::buffer::buffer_state::BufferState;
-use crate::cursor_set::CursorSet;
+
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use core::borrow::Borrow;
-use cursive::direction::Direction;
-use cursive::event::{Event, EventResult, Key, MouseButton, MouseEvent};
-use cursive::theme::{Color, ColorType};
+
+use cursive::event::{Event, EventResult};
+
 use cursive::theme::{ColorStyle, Effect};
-use cursive::utils::lines::simple::{prefix, simple_prefix, LinesIterator, Row};
+
 use cursive::vec::Vec2;
 use cursive::view::View;
-use cursive::view::ViewWrapper;
+
 use cursive::views::IdView;
-use cursive::views::ViewRef;
-use cursive::{Printer, With, XY};
-use ropey::Rope;
-use std::borrow::BorrowMut;
-use std::cell::Ref;
-use std::cell::RefCell;
+
+use cursive::{Printer};
+
+
+
+
 use std::cmp;
-use std::cmp::min;
-use std::collections::HashMap;
-use std::iter;
-use std::rc::Rc;
+
+
+
+
 use std::string::ToString;
-use std::sync::{Arc, Mutex};
-use std::usize::MAX;
+use std::sync::{Arc};
+
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -62,9 +62,9 @@ pub struct SfyriTextView {
 
 impl SfyriTextView {
     pub fn new(s: Arc<SfyriTextState>) -> IdView<Self> {
-        let syntax_highlighting: bool = false;
+        let _syntax_highlighting: bool = false;
 
-        let mut view = SfyriTextView {
+        let view = SfyriTextView {
             s,
             position: Vec2::new(0, 0),
             last_view_size: None,
@@ -83,7 +83,7 @@ impl View for SfyriTextView {
     fn draw(&self, printer: &Printer) {
         let buffer: &BufferState = self.s.buffer.borrow();
         let index_length = buffer.len_lines().to_string().len();
-        let cursors = &self.s.cursor_set;
+        let _cursors = &self.s.cursor_set;
 
         let view_size = self.last_view_size.expect("view size not known.");
 
@@ -136,7 +136,7 @@ impl View for SfyriTextView {
             for char_idx in 0..(line_char_count + add) {
                 let char_offset = line_offset + char_idx;
 
-                let mut special_char = false;
+                let special_char = false;
                 let symbol: &str = if line_char_count > char_idx {
                     let c = line[char_idx..].graphemes(true).next().unwrap();
 
@@ -149,7 +149,7 @@ impl View for SfyriTextView {
                     ColorStyle::highlight()
                 } else {
                     if char_idx <= 80 && !special_char {
-                        let mut some_color = ColorStyle::primary();
+                        let some_color = ColorStyle::primary();
 
                         some_color
                     } else {

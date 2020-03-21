@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
-use crate::sfyri_text::sfyri_text_state::SfyriTextState;
-use crate::svc::Pilot;
+
+
+
 use crossbeam_channel::{Receiver, Sender};
 
 pub enum SfyriPilotMsg {}

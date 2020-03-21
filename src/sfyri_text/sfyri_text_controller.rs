@@ -20,8 +20,8 @@ use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use crate::svc::Controller;
 use crossbeam_channel::{Receiver, Sender};
 use std::borrow::Borrow;
-use std::cell::{Cell, Ref, RefCell};
-use std::collections::{HashMap, HashSet};
+use std::cell::{RefCell};
+use std::collections::{HashMap};
 use std::sync::Arc;
 
 struct PilotDesc {
@@ -62,7 +62,7 @@ impl Controller<SfyriTextState> for SfyriTextController {
         unimplemented!()
     }
 
-    fn set_state(&mut self, s: Arc<SfyriTextState>) {
+    fn set_state(&mut self, _s: Arc<SfyriTextState>) {
         unimplemented!()
     }
 

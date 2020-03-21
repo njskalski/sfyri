@@ -18,22 +18,22 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 use crate::interface::interface_state::InterfaceState;
 use crate::interface::interface_worker::{InterfaceWorker, InterfaceWorkerResult};
 use crate::svc::Controller;
-use std::ops::Deref;
+
 use std::sync::Arc;
 use std::thread;
 
-use crate::buffer::buffer_controller::BufferController;
-use crate::buffer::buffer_state::BufferState;
+
+
 use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
 use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
-use crate::view_type::ViewType;
+
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use std::borrow::Borrow;
-use std::collections::HashMap;
+
+
 
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
-    handle: Option<thread::JoinHandle<(InterfaceWorkerResult)>>,
+    handle: Option<thread::JoinHandle<InterfaceWorkerResult>>,
     msgs: Sender<InterfaceMsg>,
     tmp_textview_controller: SfyriTextController,
 }
@@ -41,7 +41,7 @@ pub struct InterfaceController {
 impl InterfaceController {
     pub fn new() -> Self {
         let (sender, receiver): (Sender<InterfaceMsg>, Receiver<InterfaceMsg>) = unbounded();
-        let (sender_back, receiver_back): (Sender<InterfaceBackMsg>, Receiver<InterfaceBackMsg>) =
+        let (sender_back, _receiver_back): (Sender<InterfaceBackMsg>, Receiver<InterfaceBackMsg>) =
             unbounded();
 
         let handle = InterfaceWorker::start(receiver, sender_back);

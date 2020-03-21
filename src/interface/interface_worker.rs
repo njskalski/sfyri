@@ -16,13 +16,13 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
-use crate::interface::interface_state::InterfaceState;
-use crate::sfyri_text::sfyri_text_view::SfyriTextView;
-use crate::view_type::ViewType;
+
+
+
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use cursive::Cursive;
 use std::string::ToString;
-use std::sync::{Arc, Mutex};
+
 use std::thread;
 
 pub enum InterfaceWorkerResult {
@@ -45,7 +45,7 @@ impl InterfaceWorker {
         thread::Builder::new()
             .name("interface_worker".to_string())
             .spawn(move || {
-                let mut siv = Cursive::default();
+                let siv = Cursive::default();
                 let mut worker = InterfaceWorker {
                     receiver,
                     sender,
@@ -62,7 +62,7 @@ impl InterfaceWorker {
     }
 
     pub fn main(&mut self) -> InterfaceWorkerResult {
-        while (self.siv.is_running()) {
+        while self.siv.is_running() {
             self.tick += 1;
             /// here we block on input.
             self.siv.step();

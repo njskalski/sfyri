@@ -16,7 +16,7 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::interface::interface_state::InterfaceState;
-use crate::view_type::ViewType;
+
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]

@@ -16,9 +16,9 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use ropey::Rope;
-use serde::de::{self, Visitor};
+use serde::de::{self};
 use serde::export::fmt;
-use serde::export::Formatter;
+
 use serde::{Deserializer, Serializer};
 
 #[derive(Clone, Debug)]

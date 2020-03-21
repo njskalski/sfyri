@@ -23,9 +23,9 @@ use crate::buffer::buffer_state::BufferState;
 use crate::cursor_set::CursorSet;
 use crate::edit_event::EditEvent;
 use crate::svc::State;
-use std::borrow::{Borrow, BorrowMut};
-use std::sync::{Arc, Mutex};
-use unicode_segmentation::UnicodeSegmentation;
+
+use std::sync::{Arc};
+
 
 // This is supposed to be a serializable state of view
 // Impossible. Pointer will never be serializable.

@@ -17,12 +17,12 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use crate::buffer::apply_events::apply_events;
 use crate::buffer::buffer_state::BufferState;
-use crate::buffer::wrapped_rope::WrappedRope;
+
 use crate::edit_event::EditEvent;
 use crate::svc::Controller;
-use std::borrow::Borrow;
-use std::mem;
-use std::ops::Deref;
+
+
+
 use std::sync::Arc;
 
 pub struct BufferController {
@@ -45,7 +45,7 @@ impl BufferController {
         let old_state = self.s.take().unwrap();
 
         let old_rope = old_state.get_rope();
-        let (new_rope, num_common_lines) = apply_events(&old_rope, events);
+        let (new_rope, _num_common_lines) = apply_events(&old_rope, events);
 
         let new_state = BufferState::new(new_rope, None, Some(old_state));
 
