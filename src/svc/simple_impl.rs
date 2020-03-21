@@ -21,10 +21,11 @@ use std::borrow::BorrowMut;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub struct SimplePilotImpl<ForwardMsg: Send, BackMsg: Send> {
-    s: Sender<ForwardMsg>,
-    r: Receiver<BackMsg>,
-    id: usize,
+    pub s: Sender<ForwardMsg>,
+    pub r: Receiver<BackMsg>,
+    pub id: usize,
 }
 
 impl<ForwardMsg: Send, BackMsg: Send> SimplePilotImpl<ForwardMsg, BackMsg> {
@@ -61,21 +62,17 @@ pub struct SimplePilotManagerImpl<ForwardMsg: Send, BackMsg: Send> {
     next_pilot_id: RefCell<usize>,
 }
 
-impl<ForwardMsg: Send, BackMsg: Send>
-    SimplePilotManagerImpl<ForwardMsg, BackMsg>
-{
+impl<ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg> {
     pub fn new() -> Self {
         SimplePilotManagerImpl {
             p: RefCell::new(HashMap::new()),
-            next_pilot_id: RefCell::new(0)
+            next_pilot_id: RefCell::new(0),
         }
     }
 }
 
 //ST : State, C : Controller<ST>,
-impl<ForwardMsg: Send, BackMsg: Send>
-    SimplePilotManagerImpl<ForwardMsg, BackMsg>
-{
+impl<ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg> {
     pub fn get_pilot(&self) -> SimplePilotImpl<ForwardMsg, BackMsg> {
         let (s, r) = crossbeam_channel::unbounded::<ForwardMsg>();
         let (sb, rb) = crossbeam_channel::unbounded::<BackMsg>();

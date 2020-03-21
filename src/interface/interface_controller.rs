@@ -30,25 +30,24 @@ use crossbeam_channel::{unbounded, Receiver, Sender};
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
     handle: Option<thread::JoinHandle<InterfaceWorkerResult>>,
+    ss : Sender<Arc<InterfaceState>>,
     pc: SimplePilotManagerImpl<InterfaceMsg, InterfaceBackMsg>,
     tmp_textview_controller: SfyriTextController,
 }
 
 impl InterfaceController {
     pub fn new() -> Self {
-        let pc = SimplePilotManagerImpl::<InterfaceMsg, InterfaceBackMsg>::new();
-        let pilot = pc.get_pilot();
+        let pc = SimplePilotManagerImpl::<InterfaceMsg, InterfaceBackMsg>::new();=
 
-        let (sender, receiver): (Sender<InterfaceMsg>, Receiver<InterfaceMsg>) = unbounded();
-        let (sender_back, _receiver_back): (Sender<InterfaceBackMsg>, Receiver<InterfaceBackMsg>) =
-            unbounded();
+        let (ss, sr) = crossbeam_channel::unbounded::<Arc<InterfaceState>>();
 
-        let handle = InterfaceWorker::start(pc.get_pilot());
+        let handle = InterfaceWorker::start(pc.get_pilot(), sr);
 
         InterfaceController {
             state: Arc::new(InterfaceState::new()),
             handle: Some(handle),
             pc,
+            ss,
             // TODO remove
             tmp_textview_controller: SfyriTextController::empty(),
         }

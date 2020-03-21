@@ -25,10 +25,13 @@ pub type InterfacePilot = SimplePilotImpl<InterfaceMsg, InterfaceBackMsg>;
 #[derive(Clone, Debug)]
 pub enum InterfaceMsg {
     PreDrawTick,
+    GetState,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub enum InterfaceBackMsg {
     ShutDown,
     Redraw,
 }
+
+impl InterfacePilot {}

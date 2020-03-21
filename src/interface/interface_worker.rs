@@ -21,6 +21,8 @@ use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use cursive::Cursive;
 use std::string::ToString;
 
+use crate::interface::interface_state::InterfaceState;
+use std::sync::Arc;
 use std::thread;
 
 pub enum InterfaceWorkerResult {
@@ -29,17 +31,26 @@ pub enum InterfaceWorkerResult {
 
 pub struct InterfaceWorker {
     ip: InterfacePilot,
+    r: Receiver<Arc<InterfaceState>>,
     siv: Cursive,
     tick: u64,
 }
 
 impl InterfaceWorker {
-    pub fn start(ip: InterfacePilot) -> thread::JoinHandle<InterfaceWorkerResult> {
+    pub fn start(
+        ip: InterfacePilot,
+        r: Receiver<Arc<InterfaceState>>,
+    ) -> thread::JoinHandle<InterfaceWorkerResult> {
         thread::Builder::new()
             .name("interface_worker".to_string())
             .spawn(move || {
                 let siv = Cursive::default();
-                let mut worker = InterfaceWorker { ip, siv, tick: 0 };
+                let mut worker = InterfaceWorker {
+                    ip,
+                    r,
+                    siv,
+                    tick: 0,
+                };
                 worker.main()
             })
             .unwrap()
