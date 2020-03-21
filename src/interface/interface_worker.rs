@@ -84,10 +84,19 @@ impl InterfaceWorker {
                 },
             }
 
+            match self.r.recv() {
+                Ok(state) => self.process_state(state),
+                Err(e) => warn!("We got an arror receiving state from Interface: {:?}", e)
+            }
+
             self.siv.refresh();
         }
 
         debug!("interface worker thread ends.");
         InterfaceWorkerResult::Quit
+    }
+
+    fn process_state(&mut self,state : Arc<InterfaceState>) {
+
     }
 }
