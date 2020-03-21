@@ -19,24 +19,10 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 
 use crossbeam_channel::{Receiver, Sender};
+use crate::svc::simple_impl::SimplePilotImpl;
 
 pub enum SfyriPilotMsg {}
 
 pub enum SfyriPilotBackMsg {}
 
-pub struct SfyriTextPilot {
-    s: Sender<SfyriPilotMsg>,
-    r: Receiver<SfyriPilotBackMsg>,
-}
-
-impl SfyriTextPilot {
-    pub fn new(s: Sender<SfyriPilotMsg>, r: Receiver<SfyriPilotBackMsg>) -> Self {
-        SfyriTextPilot { s, r }
-    }
-}
-
-// impl Pilot<SfyriTextState, SfyriTextController> for SfyriTextPilot {
-//     fn is_live(&self) -> bool {
-//         unimplemented!()
-//     }
-// }
+pub type SfyriTextPilot = SimplePilotImpl<SfyriPilotMsg, SfyriPilotBackMsg>;

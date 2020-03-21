@@ -23,37 +23,19 @@ use std::borrow::Borrow;
 use std::cell::{RefCell};
 use std::collections::{HashMap};
 use std::sync::Arc;
-
-struct PilotDesc {
-    s: Sender<SfyriPilotBackMsg>,
-    r: Receiver<SfyriPilotMsg>,
-}
+use crate::svc::simple_impl::SimplePilotManagerImpl;
 
 pub struct SfyriTextController {
     s: Option<Arc<SfyriTextState>>,
-    p: RefCell<HashMap<usize, PilotDesc>>,
-    next_pilot_id: RefCell<usize>, //TODO looping
+    pc : SimplePilotManagerImpl<SfyriPilotMsg, SfyriPilotBackMsg>
 }
 
 impl SfyriTextController {
     pub fn empty() -> Self {
         SfyriTextController {
             s: Some(Arc::new(SfyriTextState::empty())),
-            p: RefCell::new(HashMap::new()),
-            next_pilot_id: RefCell::new(0),
+            pc : SimplePilotManagerImpl::new()
         }
-    }
-
-    pub fn get_pilot(&self) -> SfyriTextPilot {
-        let (s, r) = crossbeam_channel::unbounded::<SfyriPilotMsg>();
-        let (sb, rb) = crossbeam_channel::unbounded::<SfyriPilotBackMsg>();
-
-        let pd = PilotDesc { s: sb, r };
-
-        self.p.borrow_mut().insert(*self.next_pilot_id.borrow(), pd);
-        *self.next_pilot_id.borrow_mut() += 1;
-
-        SfyriTextPilot::new(s, rb)
     }
 }
 

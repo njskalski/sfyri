@@ -21,14 +21,10 @@ use crate::svc::Controller;
 
 use std::sync::Arc;
 use std::thread;
-
-
-
 use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
-use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
-
+use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
 
 
 pub struct InterfaceController {

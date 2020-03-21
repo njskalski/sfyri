@@ -17,10 +17,10 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 use serde::de::DeserializeOwned;
 use serde::{Serialize};
-
 use std::fmt::Debug;
-
 use std::sync::Arc;
+
+pub mod simple_impl;
 
 pub trait State: Clone + Debug + Serialize + DeserializeOwned + Sized + Send {
     fn is_versioned(&self) -> bool {
@@ -68,4 +68,4 @@ pub trait Pilot /*<ST: State, C : Controller<ST>>*/ {
     fn is_live(&self) -> bool;
 }
 
-mod simple_impl;
+

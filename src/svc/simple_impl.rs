@@ -57,6 +57,15 @@ pub struct SimplePilotManagerImpl<ForwardMsg: Send, BackMsg: Send> {
     next_pilot_id: RefCell<usize>,
 }
 
+impl <ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg> {
+    pub fn new() -> Self {
+        SimplePilotManagerImpl {
+            p : RefCell::new(HashMap::new()),
+            next_pilot_id : RefCell::new(0)
+        }
+    }
+}
+
 //ST : State, C : Controller<ST>,
 impl<ForwardMsg: Send, BackMsg: Send> SimplePilotManagerImpl<ForwardMsg, BackMsg> {
     pub fn get_pilot(&self) -> SimplePilotImpl<ForwardMsg, BackMsg> {
