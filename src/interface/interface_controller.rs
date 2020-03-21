@@ -22,20 +22,20 @@ use std::ops::Deref;
 use std::sync::Arc;
 use std::thread;
 
+use crate::buffer::buffer_controller::BufferController;
+use crate::buffer::buffer_state::BufferState;
 use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
+use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
 use crate::view_type::ViewType;
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use crate::buffer::buffer_controller::BufferController;
-use std::collections::HashMap;
-use crate::buffer::buffer_state::BufferState;
 use std::borrow::Borrow;
-use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
+use std::collections::HashMap;
 
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
     handle: Option<thread::JoinHandle<(InterfaceWorkerResult)>>,
     msgs: Sender<InterfaceMsg>,
-    tmp_textview_controller : SfyriTextController
+    tmp_textview_controller: SfyriTextController,
 }
 
 impl InterfaceController {
@@ -51,7 +51,7 @@ impl InterfaceController {
             handle: Some(handle),
             msgs: sender,
             // TODO remove
-            tmp_textview_controller : SfyriTextController::empty()
+            tmp_textview_controller: SfyriTextController::empty(),
         }
     }
 

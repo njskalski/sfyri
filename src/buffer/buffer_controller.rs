@@ -31,7 +31,9 @@ pub struct BufferController {
 
 impl BufferController {
     pub fn new() -> Self {
-        BufferController { s : Some( Arc::new(BufferState::empty()) ) }
+        BufferController {
+            s: Some(Arc::new(BufferState::empty())),
+        }
     }
 
     fn advance_state(&mut self, events: &Vec<EditEvent>) {
@@ -45,11 +47,7 @@ impl BufferController {
         let old_rope = old_state.get_rope();
         let (new_rope, num_common_lines) = apply_events(&old_rope, events);
 
-        let new_state = BufferState::new(
-            new_rope,
-            None,
-            Some(old_state)
-        );
+        let new_state = BufferState::new(new_rope, None, Some(old_state));
 
         self.s = Some(Arc::new(new_state))
     }

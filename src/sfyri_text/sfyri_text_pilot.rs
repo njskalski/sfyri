@@ -15,14 +15,28 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use crate::svc::Pilot;
-use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
+use crossbeam_channel::{Receiver, Sender};
 
-struct SfyriTextPilot {}
+pub enum SfyriPilotMsg {}
 
-impl Pilot<SfyriTextController> for SfyriTextPilot {
-    fn is_live(&self) -> bool {
-        unimplemented!()
+pub enum SfyriPilotBackMsg {}
+
+pub struct SfyriTextPilot {
+    s: Sender<SfyriPilotMsg>,
+    r: Receiver<SfyriPilotBackMsg>,
+}
+
+impl SfyriTextPilot {
+    pub fn new(s: Sender<SfyriPilotMsg>, r: Receiver<SfyriPilotBackMsg>) -> Self {
+        SfyriTextPilot { s, r }
     }
 }
+
+// impl Pilot<SfyriTextState, SfyriTextController> for SfyriTextPilot {
+//     fn is_live(&self) -> bool {
+//         unimplemented!()
+//     }
+// }

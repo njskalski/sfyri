@@ -18,9 +18,9 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::borrow::Borrow;
+use std::fmt::Debug;
 use std::ops::Deref;
 use std::sync::Arc;
-use std::fmt::Debug;
 
 pub trait State: Clone + Debug + Serialize + DeserializeOwned + Sized + Send {
     fn is_versioned(&self) -> bool {
@@ -64,6 +64,8 @@ pub trait Controller<ST: State> {
     fn is_state_ready(&self) -> bool;
 }
 
-pub trait Pilot<C : Controller<ST : State>> {
+pub trait Pilot /*<ST: State, C : Controller<ST>>*/ {
     fn is_live(&self) -> bool;
 }
+
+mod simple_impl;

@@ -51,4 +51,8 @@ As for now, I make no assumptions on number of Pilots per Component or their lif
 
 I also have not decided if Pilots are one way or two ways (like blocking RPC or "meetings" in CSP).
 
-see thought experiment 1. 
+see thought experiment 1.
+
+Design decisions so far:
+- There can be multiple pilots
+- Pilots have both blocking and non-blocking operations, but all non-blocking operations have a block in mode. For ease of iteration, until I know better. 

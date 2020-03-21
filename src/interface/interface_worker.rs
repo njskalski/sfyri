@@ -16,14 +16,14 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::interface::interface_msg::{InterfaceBackMsg, InterfaceMsg};
+use crate::interface::interface_state::InterfaceState;
+use crate::sfyri_text::sfyri_text_view::SfyriTextView;
+use crate::view_type::ViewType;
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use cursive::Cursive;
 use std::string::ToString;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use crate::view_type::ViewType;
-use crate::sfyri_text::sfyri_text_view::SfyriTextView;
-use crate::interface::interface_state::InterfaceState;
 
 pub enum InterfaceWorkerResult {
     Quit,
@@ -81,9 +81,7 @@ impl InterfaceWorker {
                     // InterfaceMsg::UpdateState {state } => {
                     //     self.is = state;
                     // }
-                    other => {
-                        debug!("Ignoring InterfaceMsg of {:?}", other)
-                    }
+                    other => debug!("Ignoring InterfaceMsg of {:?}", other),
                 },
             }
 

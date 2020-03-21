@@ -15,15 +15,15 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::view_type::ViewType;
 use crate::interface::interface_state::InterfaceState;
+use crate::view_type::ViewType;
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub enum InterfaceMsg {
     ShutDown,
     Redraw,
-    UpdateState{state : Arc<InterfaceState>}
+    UpdateState { state: Arc<InterfaceState> },
 }
 
 #[derive(Clone, Copy, Debug)]

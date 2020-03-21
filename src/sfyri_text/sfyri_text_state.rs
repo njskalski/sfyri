@@ -19,13 +19,13 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::buffer::buffer_state::BufferState;
 use crate::cursor_set::CursorSet;
 use crate::edit_event::EditEvent;
 use crate::svc::State;
 use std::borrow::{Borrow, BorrowMut};
 use std::sync::{Arc, Mutex};
 use unicode_segmentation::UnicodeSegmentation;
-use crate::buffer::buffer_state::BufferState;
 
 // This is supposed to be a serializable state of view
 // Impossible. Pointer will never be serializable.
@@ -76,7 +76,8 @@ impl SfyriTextState {
             unicode_segmentation::UnicodeSegmentation::graphemes(text.to_string().as_str(), true)
                 .count();
 
-        self.cursor_set.move_right_by(self.buffer.as_ref(), text_len);
+        self.cursor_set
+            .move_right_by(self.buffer.as_ref(), text_len);
     }
 
     // // TODO(njskalski): fix, test

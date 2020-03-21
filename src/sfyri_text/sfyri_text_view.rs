@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::buffer::buffer_state::BufferState;
 use crate::cursor_set::CursorSet;
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use core::borrow::Borrow;
@@ -48,7 +49,6 @@ use std::sync::{Arc, Mutex};
 use std::usize::MAX;
 use unicode_segmentation;
 use unicode_segmentation::UnicodeSegmentation;
-use crate::buffer::buffer_state::BufferState;
 
 const INDEX_MARGIN: usize = 1;
 const PAGE_WIDTH: usize = 80;
@@ -84,7 +84,6 @@ impl View for SfyriTextView {
         let buffer: &BufferState = self.s.buffer.borrow();
         let index_length = buffer.len_lines().to_string().len();
         let cursors = &self.s.cursor_set;
-
 
         let view_size = self.last_view_size.expect("view size not known.");
 

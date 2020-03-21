@@ -16,6 +16,6 @@ along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 pub mod sfyri_text_controller;
+pub mod sfyri_text_pilot;
 pub mod sfyri_text_state;
 pub mod sfyri_text_view;
-pub mod sfyri_text_pilot;

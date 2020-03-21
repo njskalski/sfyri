@@ -21,8 +21,8 @@ use crate::svc::State;
 use ropey::{Rope, RopeSlice};
 use serde::{Deserializer, Serializer};
 use std::borrow::Borrow;
-use std::sync::Arc;
 use std::str::Chars;
+use std::sync::Arc;
 
 // Cursors are not part of BufferState, for now.
 
@@ -76,7 +76,7 @@ impl BufferState {
 
     // TODO this should be removed for a bounded line request (?) \
     // OR make it return an iterator over line.
-    pub fn line(&self, line_idx : usize) -> String {
+    pub fn line(&self, line_idx: usize) -> String {
         self.w.r.line(line_idx).to_string().clone()
     }
 }
