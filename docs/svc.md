@@ -2,57 +2,60 @@
 
 Idea is following:
 
-Controller -(produces)-> State -(that is read-only for)-> View
+Controller -(produces)-> State -(that is read-only for)-> View -(sends messages to Controller via)-> Pilot
 
 ####View
 Simple. Displays State. If there is input to the view, it's packaged
 into (most likely) messages to Controller.
 
-- View however have no capacity to update state. 
-
-Dropped:
-- State can be updated outside of View, so View should not assume it's immutability.
-
+- View however have no capacity to update state.
+- View does not hold a reference to controller.
+- View has a "pilot", which is a packaged message pipe to-and-back to controller. 
 
 ####Controller
 
-Controllers are used to do interaction. They produce state.
+Controllers produce State. Nevertheless, they are effectively nested Finite State Automata.
+To distinguish, while writing about Controller state I will use lowercase letters.
 
 Controller of complex structure can contain controllers of substructures
 and generate it's state by aggregating data from sub-states.
 
+The idea is following: Each controller have Stable and Intermediate states.
+- Intermediate state is when Controller is transitioning from one Stable state to another one,
+but the target one is not necessarily determined yet (it might be querying a substate for determining info).
+- While in intermediate state, Controller is not accepting input from Piltos
+- Controllers move from Stable to intermediate state stimulated either by parent controller or
+in response to Pilot message. 
+
+Update mechanism (current idea):
+A controller consumes messages received from Pilot in a "tick".
+While "ticking", Controller updates it's children controllers passing itself as mutable reference
+(therefore blocking for outside edits).
+
+If controllers use Pilots, it's only to communicate in deferred-update mode, most likely with non-ancestors. 
+
 Considered:
-controllers might need an update mechanism, like top down one. Not sure yet. The initial idea was an update method with contract that once called, the parent is already updated. Removed now.
+- maybe Controllers need to be Sync. I don't think so yet.
 
 ####State
 
 State needs to be Serializable and Send.
 
-Here are some ideas I have:
-- State should be a tree of (possibly shared) substates. No point in copying them every use, state of MOST components will remain same frame-to-frame. 
-- Controller can DROP the previous state (and start from scrach or not) but 
-the dropped state will continue to persist read-only until last of it's clients drops it.
+State is IMMUTABLE and therefore can be shared around via Arc and share substates between versions / ticks.
 
 This is experimental:
 - Can be versioned.
 - Serialize PRESERVES versions...
 - ...unless you explicitly DROP.
+- Drop would produce new, simplified state, since the original is immutable.
 
 #### Pilot
 
-In order to avoid passing around mutable references to Controllers, I will default
-to async messages for passing information from tui/gui implementation back to controller.
+Pilot represents a direct line to controller, via async messages. You can think of it as RPC interface.
+Most likely Pilots will offer both blocking and non blocking calls.
 
-To avoid routing messages from root back to subcontrollers and allow moving responsibility down to subtrees, I will create DIRECT lines from views to controllers.
+One controller can have multiple Pilots. Pilots are numbered. 
 
-I will call these lines Pilots.
+They are designed primarily to be passed around to Views as "lightweight in terms of borrowchecking"
+references to controllers.
 
-As for now, I make no assumptions on number of Pilots per Component or their lifetimes.
-
-I also have not decided if Pilots are one way or two ways (like blocking RPC or "meetings" in CSP).
-
-see thought experiment 1.
-
-Design decisions so far:
-- There can be multiple pilots
-- Pilots have both blocking and non-blocking operations, but all non-blocking operations have a block in mode. For ease of iteration, until I know better. 
