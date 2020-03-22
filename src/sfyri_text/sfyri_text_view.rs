@@ -32,7 +32,7 @@ use cursive::theme::{ColorStyle, Effect};
 use cursive::vec::Vec2;
 use cursive::view::View;
 
-use cursive::views::IdView;
+use cursive::views::NamedView;
 
 use cursive::Printer;
 
@@ -55,7 +55,7 @@ pub struct SfyriTextView {
 }
 
 impl SfyriTextView {
-    pub fn new(s: Arc<SfyriTextState>) -> IdView<Self> {
+    pub fn new(s: Arc<SfyriTextState>) -> NamedView<Self> {
         let _syntax_highlighting: bool = false;
 
         let view = SfyriTextView {
@@ -64,7 +64,7 @@ impl SfyriTextView {
             last_view_size: None,
         };
 
-        IdView::new("text_view", view)
+        NamedView::new("text_view", view)
     }
 
     pub fn update_state(&mut self, s: Arc<SfyriTextState>) {

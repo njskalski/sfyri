@@ -24,6 +24,7 @@ use std::string::ToString;
 use crate::interface::interface_state::InterfaceState;
 use std::sync::Arc;
 use std::thread;
+use std::borrow::Borrow;
 
 pub enum InterfaceWorkerResult {
     Quit,
@@ -96,5 +97,21 @@ impl InterfaceWorker {
         InterfaceWorkerResult::Quit
     }
 
-    fn process_state(&mut self, state: Arc<InterfaceState>) {}
+    fn process_state(&mut self, state: Arc<InterfaceState>) {
+
+        match state.borrow() {
+            InterfaceState::Empty => {
+                loop {
+                    match self.siv.pop_layer() {
+                        None => break,
+                        Some(layer) => {
+                            debug!("removing layer");
+                            continue
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
 }

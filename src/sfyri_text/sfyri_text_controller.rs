@@ -24,24 +24,28 @@ use std::borrow::Borrow;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::sync::Arc;
+use crate::idgen::Id;
 
 pub struct SfyriTextController {
     s: Option<Arc<SfyriTextState>>,
     pub pc: SimplePilotManagerImpl<SfyriPilotMsg, SfyriPilotBackMsg>,
+    pub id : Id,
 }
 
 impl SfyriTextController {
     pub fn empty() -> Self {
+        let id = Id::get_next_id();
         SfyriTextController {
             s: Some(Arc::new(SfyriTextState::empty())),
             pc: SimplePilotManagerImpl::new(),
+            id : id.clone(),
         }
     }
 }
 
 impl Controller<SfyriTextState> for SfyriTextController {
     fn get_state(&self) -> Option<Arc<SfyriTextState>> {
-        unimplemented!()
+        self.s.clone()
     }
 
     fn set_state(&mut self, _s: Arc<SfyriTextState>) {
@@ -51,4 +55,6 @@ impl Controller<SfyriTextState> for SfyriTextController {
     fn is_state_ready(&self) -> bool {
         unimplemented!()
     }
+
+
 }

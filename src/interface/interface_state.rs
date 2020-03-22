@@ -16,17 +16,19 @@ along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::svc::State;
+use std::sync::{Arc, Mutex};
+use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum InterfaceState {
-    Ready,
-    Finished,
+    Empty,
+    Text{ textview : SfyriTextState }
 }
 
 impl State for InterfaceState {}
 
 impl InterfaceState {
     pub fn new() -> Self {
-        InterfaceState::Ready
+        InterfaceState::Empty
     }
 }

@@ -19,36 +19,14 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::fmt::Debug;
 use std::sync::Arc;
+use crate::idgen::Id;
 
 pub mod simple_impl;
 
-pub trait State: Clone + Debug + Serialize + DeserializeOwned + Sized + Send {
-    fn is_versioned(&self) -> bool {
-        false
-    }
-
-    fn can_undo(&self) -> bool {
-        false
-    }
-
-    fn can_redo(&self) -> bool {
-        false
-    }
-
-    fn get_next(&self) -> Option<Self> {
-        None
-    }
-
-    fn get_prev(&self) -> Option<Self> {
-        None
-    }
-
-    fn drop_history(&self) -> Option<Self> {
-        None
-    }
+pub trait State : Clone + Debug + Serialize + DeserializeOwned + Send + Sized {
 }
 
-pub trait Controller<ST: State> {
+pub trait Controller<ST: State > {
     // Rationale: Controller can be in incomplete state to render a complete state.
     fn get_state(&self) -> Option<Arc<ST>>;
 
