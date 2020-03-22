@@ -12,7 +12,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use serde::de::DeserializeOwned;
@@ -43,12 +43,8 @@ pub trait State: Clone + Debug + Serialize + DeserializeOwned + Sized + Send {
         None
     }
 
-    fn drop_predecessors(&mut self) {}
-    fn drop_successors(&mut self) {}
-
-    fn select(&mut self) {
-        self.drop_successors();
-        self.drop_predecessors();
+    fn drop_history(&self) -> Option<Self> {
+        None
     }
 }
 
