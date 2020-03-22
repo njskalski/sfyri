@@ -15,10 +15,7 @@ You should have received a copy of the GNU General Public License
 along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::interface::interface_state::InterfaceState;
-
-use crate::svc::simple_impl::{SimplePilotImpl, SimplePilotManagerImpl};
-use std::sync::Arc;
+use crate::svc::simple_impl::SimplePilotImpl;
 
 pub type InterfacePilot = SimplePilotImpl<InterfaceMsg, InterfaceBackMsg>;
 

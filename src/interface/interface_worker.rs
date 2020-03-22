@@ -15,16 +15,16 @@ You should have received a copy of the GNU General Public License
 along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::interface::interface_pilot::{InterfaceBackMsg, InterfaceMsg, InterfacePilot};
+use crate::interface::interface_pilot::{InterfaceBackMsg, InterfacePilot};
 
-use crossbeam_channel::{Receiver, Sender, TryRecvError};
+use crossbeam_channel::{Receiver, TryRecvError};
 use cursive::Cursive;
 use std::string::ToString;
 
 use crate::interface::interface_state::InterfaceState;
+use std::borrow::Borrow;
 use std::sync::Arc;
 use std::thread;
-use std::borrow::Borrow;
 
 pub enum InterfaceWorkerResult {
     Quit,
@@ -98,19 +98,16 @@ impl InterfaceWorker {
     }
 
     fn process_state(&mut self, state: Arc<InterfaceState>) {
-
         match state.borrow() {
-            InterfaceState::Empty => {
-                loop {
-                    match self.siv.pop_layer() {
-                        None => break,
-                        Some(layer) => {
-                            debug!("removing layer");
-                            continue
-                        }
+            InterfaceState::Empty => loop {
+                match self.siv.pop_layer() {
+                    None => break,
+                    Some(_layer) => {
+                        debug!("removing layer");
+                        continue;
                     }
                 }
-            }
+            },
             _ => {}
         }
     }

@@ -15,23 +15,24 @@ You should have received a copy of the GNU General Public License
 along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use serde::de::Unexpected::Str;
+use serde::export::Formatter;
 use std::marker::Send;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use serde::export::Formatter;
-use serde::export::fmt::Error;
+
 use std::fmt;
 
-static next_id : AtomicUsize = AtomicUsize::new(1);
+static next_id: AtomicUsize = AtomicUsize::new(1);
 
 #[derive(Clone, Serialize, Deserialize, Eq, Ord, PartialOrd, PartialEq)]
 pub struct Id {
-    id : usize
+    id: usize,
 }
 
 impl Id {
     pub fn get_next_id() -> Self {
-        Id { id : next_id.fetch_add(1, Ordering::Relaxed) }
+        Id {
+            id: next_id.fetch_add(1, Ordering::Relaxed),
+        }
     }
 }
 

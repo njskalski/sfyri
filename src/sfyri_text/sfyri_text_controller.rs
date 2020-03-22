@@ -15,21 +15,18 @@ You should have received a copy of the GNU General Public License
 along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use crate::sfyri_text::sfyri_text_pilot::{SfyriPilotBackMsg, SfyriPilotMsg, SfyriTextPilot};
+use crate::sfyri_text::sfyri_text_pilot::{SfyriPilotBackMsg, SfyriPilotMsg};
 use crate::sfyri_text::sfyri_text_state::SfyriTextState;
 use crate::svc::simple_impl::SimplePilotManagerImpl;
 use crate::svc::Controller;
-use crossbeam_channel::{Receiver, Sender};
-use std::borrow::Borrow;
-use std::cell::RefCell;
-use std::collections::HashMap;
-use std::sync::Arc;
+
 use crate::idgen::Id;
+use std::sync::Arc;
 
 pub struct SfyriTextController {
     s: Option<Arc<SfyriTextState>>,
     pub pc: SimplePilotManagerImpl<SfyriPilotMsg, SfyriPilotBackMsg>,
-    pub id : Id,
+    pub id: Id,
 }
 
 impl SfyriTextController {
@@ -38,7 +35,7 @@ impl SfyriTextController {
         SfyriTextController {
             s: Some(Arc::new(SfyriTextState::empty())),
             pc: SimplePilotManagerImpl::new(),
-            id : id.clone(),
+            id: id.clone(),
         }
     }
 }
@@ -55,6 +52,4 @@ impl Controller<SfyriTextState> for SfyriTextController {
     fn is_state_ready(&self) -> bool {
         unimplemented!()
     }
-
-
 }

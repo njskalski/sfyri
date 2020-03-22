@@ -19,13 +19,13 @@ use crate::interface::interface_state::InterfaceState;
 use crate::interface::interface_worker::{InterfaceWorker, InterfaceWorkerResult};
 use crate::svc::Controller;
 
-use crate::interface::interface_pilot::{InterfaceBackMsg, InterfaceMsg, InterfacePilot};
+use crate::interface::interface_pilot::{InterfaceBackMsg, InterfaceMsg};
 use std::sync::Arc;
 use std::thread;
 
 use crate::sfyri_text::sfyri_text_controller::SfyriTextController;
 use crate::svc::simple_impl::SimplePilotManagerImpl;
-use crossbeam_channel::{unbounded, Receiver, Sender};
+use crossbeam_channel::Sender;
 
 pub struct InterfaceController {
     state: Arc<InterfaceState>,

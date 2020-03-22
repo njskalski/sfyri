@@ -16,7 +16,6 @@ along with Sfyri.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use crate::svc::simple_impl::SimplePilotImpl;
-use crossbeam_channel::{Receiver, Sender};
 
 pub enum SfyriPilotMsg {}
 

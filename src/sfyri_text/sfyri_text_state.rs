@@ -41,7 +41,7 @@ impl SfyriTextState {
     pub fn new(buffer: Arc<BufferState>) -> Self {
         SfyriTextState {
             buffer,
-            cursor_set: CursorSet::single()
+            cursor_set: CursorSet::single(),
         }
     }
 
