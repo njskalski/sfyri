@@ -30,7 +30,7 @@ use crossbeam_channel::{unbounded, Receiver, Sender};
 pub struct InterfaceController {
     state: Arc<InterfaceState>,
     handle: Option<thread::JoinHandle<InterfaceWorkerResult>>,
-    ss : Sender<Arc<InterfaceState>>,
+    ss: Sender<Arc<InterfaceState>>,
     pc: SimplePilotManagerImpl<InterfaceMsg, InterfaceBackMsg>,
     tmp_textview_controller: SfyriTextController,
 }
